@@ -6,9 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +31,10 @@ import com.microsoft.cognitiveservices.speechrecognition.RecognitionResult;
 import com.microsoft.cognitiveservices.speechrecognition.SpeechRecognitionMode;
 import com.microsoft.cognitiveservices.speechrecognition.SpeechRecognitionServiceFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -52,6 +57,7 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
     private boolean isMeetingStarted = false;
     private GridView m_grid;
     private final int REQUEST_MICROPHONE = 1;
+    private final String m_fileName = "Meeting Notes";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,7 +188,7 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
                 setNotes("Meeting Ended at : " + getDate());
                 setNotes("*********************");
                 this.m_micClient.endMicAndRecognition();
-                shareRecordedData(m_meetingNotesData.toString());
+                isStoragePermissionGranted();
                 break;
         }
     }
@@ -206,13 +212,21 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
     }
 
     private void shareRecordedData(String data) {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Meeting Notes");
-        shareIntent.setType("*/*");
-        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, data);
-        startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@example.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Meeting notes " + getDate());
+        intent.putExtra(Intent.EXTRA_TEXT, m_meetingNotesData.toString());
+        String fpath = Environment.getExternalStorageDirectory() + File.separator + m_fileName + ".txt";
+        Log.v(TAG, fpath);
+        File file = new File(fpath);
+        if (!file.exists() || !file.canRead()) {
+            Toast.makeText(this, "Attachment Error", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Uri uri = Uri.fromFile(file);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(intent, "Send email..."));
     }
 
     public static class CustomGrid extends BaseAdapter {
@@ -265,5 +279,71 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
         } else {
             Toast.makeText(this, "Please enable Microphone permissions.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public Boolean write(String fname, String fcontent) {
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try {
+
+            String fpath = Environment.getExternalStorageDirectory() + File.separator + fname + ".txt";
+            Log.v(TAG, fpath);
+            File file = new File(fpath);
+            // If file does not exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            } else {
+                file.delete();
+            }
+            fw = new FileWriter(file.getAbsoluteFile());
+            bw = new BufferedWriter(fw);
+            bw.write(fcontent);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                    bw.close();
+                } catch (IOException e) {
+
+                }
+            }
+        }
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                writeAndShare();
+                return true;
+            } else {
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            writeAndShare();
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
+            writeAndShare();
+        }
+    }
+
+    private void writeAndShare(){
+        String data = m_meetingNotesData.toString();
+        write(m_fileName, data);
+        shareRecordedData(data);
     }
 }
