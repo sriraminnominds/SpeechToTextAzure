@@ -1,12 +1,16 @@
 package com.sample.microsoft.stt;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.microsoft.cognitiveservices.speechrecognition.ISpeechRecognitionServerEvents;
 import com.microsoft.cognitiveservices.speechrecognition.MicrophoneRecognitionClient;
@@ -46,20 +51,15 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
     };
     private boolean isMeetingStarted = false;
     private GridView m_grid;
+    private final int REQUEST_MICROPHONE = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrum_meeting);
+
         initializeViews();
-
-        findViewById(R.id.meeting_controls_start).setOnClickListener(this);
-        findViewById(R.id.meeting_controls_end).setOnClickListener(this);
-
-        findViewById(R.id.meeting_controls_start).setEnabled(true);
-        findViewById(R.id.meeting_controls_end).setEnabled(false);
-
-        m_meetingNotes = (TextView) findViewById(R.id.meeting_notes);
+        requestForPermissions();
     }
 
     @Override
@@ -101,6 +101,19 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
             }
         });
 
+        findViewById(R.id.meeting_controls_start).setOnClickListener(this);
+        findViewById(R.id.meeting_controls_end).setOnClickListener(this);
+
+        findViewById(R.id.meeting_controls_start).setEnabled(true);
+        findViewById(R.id.meeting_controls_end).setEnabled(false);
+
+        m_meetingNotes = (TextView) findViewById(R.id.meeting_notes);
+    }
+
+    private void requestForPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MICROPHONE);
+        }
     }
 
     private void setSelectedParticipant(int position) {
@@ -237,6 +250,16 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
             }
             grid.setBackgroundColor(Color.WHITE);
             return grid;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MICROPHONE && resultCode == RESULT_OK) {
+
+        } else {
+            Toast.makeText(this, "Please enable Microphone permissions.", Toast.LENGTH_SHORT).show();
         }
     }
 }
