@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
     android:background="#FFFFFF"
     android:orientation="vertical">
 
@@ -28,12 +29,23 @@
             android:text="End Meeting"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/participants_grid_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_controls"
+        android:layout_marginTop="5dp"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:text="Participants :"
+        android:textSize="12sp"
+        android:textStyle="bold"/>
+
     <GridView
         android:id="@+id/participants_grid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/meeting_controls"
-        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/participants_grid_text"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
@@ -45,10 +57,44 @@
         android:verticalSpacing="10dp"/>
 
     <TextView
-        android:id="@+id/meeting_notes"
+        android:id="@+id/meeting_notes_analyser_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/participants_grid"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="Voice Analyser :"
+        android:textSize="12sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/meeting_notes_analyser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_notes_analyser_text"
+        android:layout_marginTop="2dp"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/meeting_notes_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_notes_analyser"
+        android:layout_marginTop="5dp"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:text="Meeting Notes :"
+        android:textSize="12sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/meeting_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_notes_text"
+        android:layout_marginTop="2dp"
         android:padding="5dp"
         android:scrollbars="vertical"
         android:textSize="12sp"/>

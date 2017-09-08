@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -43,10 +45,8 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
     private String m_receivedData;
     String[] participants = {
             "Scrum Master",
-            "Developer 1",
-            "Developer 2",
-            "Tester 1",
-            "Tester 2",
+            "Developer",
+            "Tester",
             "Designer"
     };
     private boolean isMeetingStarted = false;
@@ -60,11 +60,14 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
 
         initializeViews();
         requestForPermissions();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
     public void onPartialResponseReceived(String s) {
         Log.v(TAG, "onPartialResponseReceived :::::: " + s);
+        ((TextView) findViewById(R.id.meeting_notes_analyser)).setText(s);
         m_receivedData = s;
     }
 
@@ -162,6 +165,7 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
                 findViewById(R.id.meeting_controls_end).setEnabled(true);
                 setSelectedParticipant(0);
 
+                m_meetingNotesData = new StringBuilder();
                 setNotes("*********************");
                 setNotes("Meeting Started at : " + getDate());
                 setNotes(participants[0] + " at : " + getDate());
