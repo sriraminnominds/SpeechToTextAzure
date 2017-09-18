@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.microsoft.cognitiveservices.speechrecognition.SpeechRecognitionServic
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -211,22 +213,45 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
         return DateFormat.getDateTimeInstance().format(date);
     }
 
-    private void shareRecordedData(String data) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@example.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Meeting notes " + getDate());
-        intent.putExtra(Intent.EXTRA_TEXT, m_meetingNotesData.toString());
-        String fpath = Environment.getExternalStorageDirectory() + File.separator + m_fileName + ".txt";
-        Log.v(TAG, fpath);
-        File file = new File(fpath);
-        if (!file.exists() || !file.canRead()) {
-            Toast.makeText(this, "Attachment Error", Toast.LENGTH_SHORT).show();
-            return;
+    public void stringToPdf() {
+        FileOutputStream fOut = null;
+        try {
+            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Meeting Notes.pdf");
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            fOut = new FileOutputStream(file);
+
+            PdfDocument document = new PdfDocument();
+
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
+            int width = displayMetrics.widthPixels;
+
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
+            PdfDocument.Page page = document.startPage(pageInfo);
+
+            m_meetingNotes.draw(page.getCanvas());
+
+            document.finishPage(page);
+            document.writeTo(fOut);
+            document.close();
+
+            Toast.makeText(this, "Created Meeting notes document in the Documents folder", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.i("error", e.getLocalizedMessage());
+        } finally {
+            try {
+                if (fOut != null) {
+                    fOut.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        Uri uri = Uri.fromFile(file);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "Send email..."));
     }
 
     public static class CustomGrid extends BaseAdapter {
@@ -341,9 +366,10 @@ public class ScrumMeetingActivity extends Activity implements ISpeechRecognition
         }
     }
 
-    private void writeAndShare(){
+    private void writeAndShare() {
         String data = m_meetingNotesData.toString();
-        write(m_fileName, data);
-        shareRecordedData(data);
+        //write(m_fileName, data);
+        //shareRecordedData(data);
+        stringToPdf();
     }
 }
