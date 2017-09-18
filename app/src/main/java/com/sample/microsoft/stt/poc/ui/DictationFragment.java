@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
+import com.sample.microsoft.stt.poc.ui.custom.EqualizerView;
 
 /**
  * Created by sgarimella on 18/09/17.

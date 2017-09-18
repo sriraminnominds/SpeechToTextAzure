@@ -1,4 +1,4 @@
-package com.sample.microsoft.stt.poc.ui;
+package com.sample.microsoft.stt.poc.ui.custom;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
