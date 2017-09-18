@@ -25,7 +25,7 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
 
     private String mReceivedData = null;
 
-    public void initializeRecoClient(Activity context, String language, String subscriptionKey, SpeechRecognitionMode mode, RecorderListener listener) {
+    public void initializeRecoClient(Activity context, String language, String subscriptionKey, SpeechRecognitionMode mode) {
         if (null == mMicClient) {
             mMicClient = SpeechRecognitionServiceFactory.createMicrophoneClient(context,
                     mode,
@@ -33,7 +33,15 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
                     this,
                     subscriptionKey);
         }
+
+    }
+
+    public void registerRecorderListener(RecorderListener listener) {
         this.mRecListener = listener;
+    }
+
+    public void unRegisterRecorderListener() {
+        this.mRecListener = null;
     }
 
     @Override
