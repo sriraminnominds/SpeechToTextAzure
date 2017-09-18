@@ -25,7 +25,8 @@ public class DictationFragment extends Fragment implements CognitiveServicesHelp
     }
 
     private void initialiseViews(View view) {
-
+        EqualizerView eq = view.findViewById(R.id.equalizer_view);
+        eq.animateBars();
     }
 
     @Override
