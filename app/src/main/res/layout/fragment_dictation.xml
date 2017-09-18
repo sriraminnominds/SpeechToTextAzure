@@ -7,20 +7,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--<com.sample.microsoft.stt.poc.ui.custom.EqualizerView-->
+        <!--android:id="@+id/equalizer_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--app:barColor="@color/colorAccent"-->
+        <!--app:barCount="30"-->
+        <!--app:barWidth="10dp"-->
+        <!--app:marginLeft="1dp"-->
+        <!--app:marginRight="1dp"-->
+        <!--app:runInBatterySaveMode="false"-->
+        <!--tools:background="@color/colorAccent"-->
+        <!--tools:layout_width="wrap_content"/>-->
 
-    <com.sample.microsoft.stt.poc.ui.custom.EqualizerView
-        android:id="@+id/equalizer_view"
+
+    <com.sample.microsoft.stt.poc.ui.visualizer.MusicWave
+        android:id="@+id/musicWave"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        app:colorGradient="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center_vertical"
-        app:barColor="@color/colorAccent"
-        app:barCount="30"
-        app:barWidth="10dp"
-        app:marginLeft="1dp"
-        app:marginRight="1dp"
-        app:runInBatterySaveMode="false"
-        tools:background="@color/colorAccent"
-        tools:layout_width="wrap_content"/>
+        app:endColor="@color/colorAccent"
+        app:startColor="@color/colorPrimary"
+        app:waveThickness="1" />
 
 </RelativeLayout>

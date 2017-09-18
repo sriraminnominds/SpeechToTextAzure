@@ -68,7 +68,7 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
 
     @Override
     public void onError(int i, String s) {
-        Log.v(TAG, "onError :::::: " + s);
+        Log.v(TAG, "onError :::::: " + s+ " :: code::: "+i);
         if (mRecListener != null) {
             mRecListener.record(RECORDER_STATE_ERROR, s);
         }
