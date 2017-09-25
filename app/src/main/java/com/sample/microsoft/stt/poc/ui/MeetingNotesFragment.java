@@ -2,6 +2,7 @@ package com.sample.microsoft.stt.poc.ui;
 
 import android.support.v4.app.Fragment;
 
+import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 
@@ -9,7 +10,7 @@ import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
  * Created by sgarimella on 18/09/17.
  */
 
-public class MeetingNotesFragment extends Fragment implements CognitiveServicesHelper.RecorderListener {
+public class MeetingNotesFragment extends BaseFragment implements CognitiveServicesHelper.RecorderListener {
 
     @Override
     public void onResume() {
@@ -24,7 +25,17 @@ public class MeetingNotesFragment extends Fragment implements CognitiveServicesH
     }
 
     @Override
-    public void record(byte state, String data) {
+    public void partial(byte state, String data) {
+
+    }
+
+    @Override
+    public void complete(byte state, String data) {
+
+    }
+
+    @Override
+    public void error(byte state, String data) {
 
     }
 }

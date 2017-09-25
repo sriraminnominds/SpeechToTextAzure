@@ -3,19 +3,19 @@ package com.sample.microsoft.stt.poc;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.microsoft.cognitiveservices.speechrecognition.SpeechRecognitionMode;
 import com.sample.microsoft.stt.R;
-import com.sample.microsoft.stt.poc.ui.DictationFragment;
+import com.sample.microsoft.stt.poc.ui.DocumentsListFragment;
 
 /**
  * Created by sgarimella on 18/09/17.
  */
 
-public class MicrosoftLandingActivity extends FragmentActivity {
+public class MicrosoftLandingActivity extends AppCompatActivity {
 
     private CognitiveServicesHelper mHelper;
 
@@ -24,7 +24,6 @@ public class MicrosoftLandingActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_microsoft_landing);
 
-
         // Initialise Cognitive Services
         mHelper = new CognitiveServicesHelper();
         String language = "en-us";
@@ -32,17 +31,37 @@ public class MicrosoftLandingActivity extends FragmentActivity {
         mHelper.initializeRecoClient(this, language, subscriptionKey, SpeechRecognitionMode.LongDictation);
 
         getSupportFragmentManager().findFragmentById(R.id.frame_container);
-        setFragment(new DictationFragment());
+        setFragment(new DocumentsListFragment());
     }
 
     public CognitiveServicesHelper getSpeechHelper() {
         return mHelper;
     }
 
-    protected void setFragment(Fragment fragment) {
+    public void setFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.replace(android.R.id.content, fragment, fragment.getClass().getName());
+        fragmentTransaction.addToBackStack(fragment.getTag());
         fragmentTransaction.commit();
+    }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    public void enableBackButton() {
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 1) {
+            manager.popBackStack();
+        } else {
+            finish();
+        }
     }
 }

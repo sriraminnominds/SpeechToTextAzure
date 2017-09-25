@@ -1,6 +1,7 @@
 package com.sample.microsoft.stt.poc;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.microsoft.cognitiveservices.speechrecognition.ISpeechRecognitionServerEvents;
@@ -17,9 +18,12 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
     private final String TAG = "CognitiveServicesHelper";
     private MicrophoneRecognitionClient mMicClient = null;
 
-    public final byte RECORDER_STATE_ERROR = 0;
-    public final byte RECORDER_STATE_PARTIAL = 1;
-    public final byte RECORDER_STATE_FINAL = 2;
+    public static final byte STATE_IDLE = 0;
+    public static final byte STATE_LISTENING = 1;
+    public static final byte STATE_ACTIVE_LISTENING = 2;
+    public static final byte STATE_SYSTEM_ERROR = 3;
+    public static final byte STATE_MICRO_PHONE_OFF = 4;
+    private byte mCognitiveState = STATE_IDLE;
 
     private RecorderListener mRecListener;
 
@@ -33,7 +37,7 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
                     this,
                     subscriptionKey);
         }
-
+        mCognitiveState = STATE_IDLE;
     }
 
     public void registerRecorderListener(RecorderListener listener) {
@@ -46,10 +50,15 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
 
     @Override
     public void onPartialResponseReceived(String s) {
-        Log.v(TAG, "onPartialResponseReceived :::::: " + s);
+        if (TextUtils.isEmpty(mReceivedData)) {
+            mCognitiveState = STATE_LISTENING;
+        } else {
+            mCognitiveState = STATE_ACTIVE_LISTENING;
+        }
+        Log.v(TAG, "onPartialResponseReceived :::::: " + s + " mCognitiveState : " + mCognitiveState);
         mReceivedData = s;
         if (mRecListener != null) {
-            mRecListener.record(RECORDER_STATE_PARTIAL, s);
+            mRecListener.partial(mCognitiveState, s);
         }
     }
 
@@ -57,8 +66,10 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
     public void onFinalResponseReceived(RecognitionResult recognitionResult) {
         Log.v(TAG, "onFinalResponseReceived :::::: " + recognitionResult.RecognitionStatus);
         if (mRecListener != null) {
-            mRecListener.record(RECORDER_STATE_FINAL, mReceivedData);
+            mRecListener.complete(mCognitiveState, mReceivedData);
         }
+        mCognitiveState = STATE_IDLE;
+        mReceivedData = null;
     }
 
     @Override
@@ -68,9 +79,10 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
 
     @Override
     public void onError(int i, String s) {
-        Log.v(TAG, "onError :::::: " + s+ " :: code::: "+i);
+        Log.v(TAG, "onError :::::: " + s + " :: code::: " + i);
+        mCognitiveState = STATE_SYSTEM_ERROR;
         if (mRecListener != null) {
-            mRecListener.record(RECORDER_STATE_ERROR, s);
+            mRecListener.error(mCognitiveState, s);
         }
     }
 
@@ -88,6 +100,18 @@ public class CognitiveServicesHelper implements ISpeechRecognitionServerEvents {
     }
 
     public interface RecorderListener {
-        void record(byte state, String data);
+        void partial(byte state, String data);
+
+        void complete(byte state, String data);
+
+        void error(byte state, String data);
+    }
+
+    public byte getCognitiveState() {
+        return mCognitiveState;
+    }
+
+    public void setCognitiveState(byte mCognitiveState) {
+        this.mCognitiveState = mCognitiveState;
     }
 }

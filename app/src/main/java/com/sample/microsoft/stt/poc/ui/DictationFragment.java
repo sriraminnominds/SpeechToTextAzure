@@ -1,28 +1,34 @@
 package com.sample.microsoft.stt.poc.ui;
 
-import android.media.MediaPlayer;
-import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
+import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
-import com.sample.microsoft.stt.poc.ui.visualizer.MusicWave;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by sgarimella on 18/09/17.
  */
 
-public class DictationFragment extends Fragment implements CognitiveServicesHelper.RecorderListener {
+public class DictationFragment extends BaseFragment implements CognitiveServicesHelper.RecorderListener {
     private final String TAG = "DictationFragment";
-    private Visualizer mVisualizer;
-    private MusicWave mMusicWave;
-    private MediaPlayer mMediaPlayer;
+
+    private TextView mRecordedView;
+    private StringBuilder mRecordedData;
+
+    public int seconds = 60;
+    public int minutes = 9;
 
     @Nullable
     @Override
@@ -33,50 +39,70 @@ public class DictationFragment extends Fragment implements CognitiveServicesHelp
     }
 
     private void initialiseViews(View view) {
-        mMusicWave = view.findViewById(R.id.musicWave);
-        prepareVisualizer();
+        mRecordedView = view.findViewById(R.id.recordeddata);
+        mRecordedData = new StringBuilder();
+        recordTimer(view);
     }
-
-    private void prepareVisualizer() {
-        mMediaPlayer = MediaPlayer.create(getActivity(), R.raw.unrelenting);
-        mVisualizer = new Visualizer(mMediaPlayer.getAudioSessionId());
-        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-        mVisualizer.setDataCaptureListener(
-                new Visualizer.OnDataCaptureListener() {
-                    public void onWaveFormDataCapture(Visualizer visualizer, byte[] bytes, int samplingRate) {
-                        mMusicWave.updateVisualizer(bytes);
-                    }
-
-                    public void onFftDataCapture(Visualizer visualizer, byte[] bytes, int samplingRate) {
-                    }
-                }, Visualizer.getMaxCaptureRate() / 2, true, false);
-        mVisualizer.setEnabled(true);
-        mMediaPlayer.start();
-    }
-
 
     @Override
     public void onResume() {
         super.onResume();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
     }
 
     @Override
     public void onPause() {
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mVisualizer.release();
-        mMediaPlayer.release();
-        mMediaPlayer = null;
     }
 
     @Override
-    public void record(byte state, String data) {
+    public void partial(byte state, String data) {
+        Log.v(TAG, "partial : " + data);
+    }
 
+    @Override
+    public void complete(byte state, String data) {
+        mRecordedData.append(data);
+        mRecordedData.append('\n');
+        mRecordedData.append('\n');
+        mRecordedView.setText(mRecordedData.toString());
+        Log.v(TAG, "complete : " + data);
+    }
+
+    @Override
+    public void error(byte state, String data) {
+        Log.v(TAG, "error : " + data);
+    }
+
+    private void recordTimer(final View view) {
+        Timer t = new Timer();
+        //Set the schedule function and rate
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView tv = (TextView) view.findViewById(R.id.timer_text);
+                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        seconds -= 1;
+                        if (seconds == 0) {
+                            tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+
+                            seconds = 60;
+                            minutes = minutes - 1;
+                        }
+                    }
+                });
+            }
+        }, 0, 1000);
     }
 }

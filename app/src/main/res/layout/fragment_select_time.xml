@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/next"
+        android:layout_width="150dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dimen_20"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:background="@color/mode_bg"
+        android:gravity="center"
+        android:text="@string/next"
+        android:textColor="@color/white"/>
+
+    <com.sample.microsoft.stt.poc.ui.custom.HoloCircleSeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="285dp"
+        android:layout_height="290dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/dimen_20"
+        app:max="10"
+        app:pointer_color="@color/mode_bg"
+        app:pointer_halo_color="@color/mode_bg"
+        app:pointer_size="20dp"
+        app:text_color="@color/mode_bg"
+        app:text_size="65sp"
+        app:wheel_active_color="@color/mode_bg"
+        app:wheel_unactive_color="@color/wheel_unactive_color"/>
+
+</RelativeLayout>
