@@ -2,6 +2,7 @@ package com.sample.microsoft.stt.poc.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,6 +109,9 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
     @Override
     public void complete(byte state, String data) {
+        if (TextUtils.isEmpty(data) || "null".equalsIgnoreCase(data)) {
+            resetAudioListener();
+        }
         mRecordedData.append(data);
         mRecordedData.append('\n');
         mRecordedView.setText(mRecordedData.toString());
@@ -163,6 +167,9 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     }
 
     public void reset() {
+        mPaused = false;
+        mPauseView.setImageResource(R.mipmap.ic_pause);
+
         mRecordedData = new StringBuilder();
         mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
         mRecordTimeInSecs = 60;
@@ -171,14 +178,19 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         //pause and stop timer
         mTimer.cancel();
         mTimer.purge();
+
+        resetAudioListener();
+        // restart timer
+        recordTimer();
+    }
+
+    private void resetAudioListener() {
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
 
-        // restart timer
-        recordTimer();
+
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
-
     }
 
     public void pause() {
