@@ -151,6 +151,20 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     public void reset() {
         mRecordedData = new StringBuilder();
         mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
+        mRecordTimeInSecs = 60;
+        mRecordedView.setText(mRecordedData.toString());
+
+        //pause and stop timer
+        mTimer.cancel();
+        mTimer.purge();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+
+        // restart timer
+        recordTimer();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
+
     }
 
     public void pause() {
