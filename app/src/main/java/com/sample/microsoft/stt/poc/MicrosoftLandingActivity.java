@@ -64,4 +64,10 @@ public class MicrosoftLandingActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
