@@ -18,22 +18,49 @@
         android:text="@string/next"
         android:textColor="@color/white"/>
 
-    <com.sample.microsoft.stt.poc.ui.custom.CircularSeekBar
-        android:id="@+id/seekbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="@dimen/dimen_20"
-        app:circle_x_radius="@dimen/mode_time_seek_width"
-        app:circle_y_radius="@dimen/mode_time_seek_height"
-        app:end_angle="270"
-        app:max="10"
-        app:pointer_alpha_ontouch="100"
-        app:pointer_color="@color/mode_bg"
-        app:pointer_halo_color="@color/colorAccent"
-        app:progress="25"
-        app:start_angle="270"
-        app:use_custom_radii="true"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.sample.microsoft.stt.poc.ui.custom.CircularSeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/dimen_20"
+            app:circle_x_radius="@dimen/mode_time_seek_width"
+            app:circle_y_radius="@dimen/mode_time_seek_height"
+            app:end_angle="270"
+            app:max="10"
+            app:pointer_alpha_ontouch="100"
+            app:pointer_color="@color/mode_bg"
+            app:pointer_halo_color="@color/colorAccent"
+            app:progress="0"
+            app:start_angle="270"
+            app:use_custom_radii="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/colorPrimary"
+                android:textSize="46sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mins"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"/>
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

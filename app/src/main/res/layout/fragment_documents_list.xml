@@ -15,7 +15,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/dimen_10"
         android:layout_marginRight="@dimen/dimen_10"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@mipmap/ic_add"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"/>
 
