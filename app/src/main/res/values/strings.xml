@@ -34,4 +34,6 @@
     <string name="title_text">Title : %1$s</string>
     <string name="listening">Listening</string>
     <string name="pdf_generator">Generate PDF</string>
+
+    <string name="no_notes">Click on the FAB button to start creating audio notes.</string>
 </resources>
