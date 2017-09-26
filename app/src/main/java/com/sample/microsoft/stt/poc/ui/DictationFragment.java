@@ -13,6 +13,7 @@ import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
+import com.sample.microsoft.stt.poc.data.POCApplication;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +29,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private StringBuilder mRecordedData;
 
     public int seconds = 60;
-    public int minutes = 9;
+    public int mRecordTimeInMins = 0;
+    Timer mTimer = new Timer();
 
     @Nullable
     @Override
@@ -42,14 +44,15 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mRecordedView = view.findViewById(R.id.recordeddata);
         mRecordedData = new StringBuilder();
 
+        mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
         recordTimer(view);
 
         String text = String.format(getResources().getString(R.string.mode_text), getResources().getString(R.string.dictation));
         ((TextView) view.findViewById(R.id.mode_text_title)).setText(text);
 
-        String title = String.format(getResources().getString(R.string.title_text), "Sample Title for Interview text wonder how it is done");
+        String t = ((POCApplication) getActivity().getApplication()).getTitle();
+        String title = String.format(getResources().getString(R.string.title_text), t);
         ((TextView) view.findViewById(R.id.title_title_title)).setText(title);
-
     }
 
     @Override
@@ -70,6 +73,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     public void onPause() {
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+
+        mTimer.cancel();
         super.onPause();
     }
 
@@ -95,7 +100,6 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         } else {
             mRecordedView.scrollTo(0, 0);
         }
-        Log.v(TAG, "complete : " + data);
     }
 
     @Override
@@ -104,29 +108,30 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     }
 
     private void recordTimer(final View view) {
-        Timer t = new Timer();
         //Set the schedule function and rate
-        t.scheduleAtFixedRate(new TimerTask() {
+        mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView tv = (TextView) view.findViewById(R.id.timer_text);
-                        String time = String.valueOf(minutes) + ":" + String.valueOf(seconds);
-                        String text = String.format(getResources().getString(R.string.time_remaining), time);
-                        tv.setText(text);
-                        seconds -= 1;
-                        if (seconds == 0) {
-                            time = String.valueOf(minutes) + ":" + String.valueOf(seconds);
-                            text = String.format(getResources().getString(R.string.time_remaining), time);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView tv = view.findViewById(R.id.timer_text);
+                            String time = String.valueOf(mRecordTimeInMins) + ":" + String.valueOf(seconds);
+                            String text = String.format(getResources().getString(R.string.time_remaining), time);
                             tv.setText(text);
+                            seconds -= 1;
+                            if (seconds == 0) {
+                                time = String.valueOf(mRecordTimeInMins) + ":" + String.valueOf(seconds);
+                                text = String.format(getResources().getString(R.string.time_remaining), time);
+                                tv.setText(text);
 
-                            seconds = 60;
-                            minutes = minutes - 1;
+                                seconds = 60;
+                                mRecordTimeInMins = mRecordTimeInMins - 1;
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }, 0, 1000);
     }

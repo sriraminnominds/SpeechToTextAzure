@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
@@ -41,6 +42,10 @@ public class SelectTimeFragment extends BaseFragment implements View.OnClickList
         mProgressView = view.findViewById(R.id.progress);
         mSeekbar = view.findViewById(R.id.seekbar);
 
+        //set previous set data
+        mSeekbar.setProgress(((POCApplication) getActivity().getApplication()).getRecordTime());
+        mProgressView.setText(String.valueOf(((POCApplication) getActivity().getApplication()).getRecordTime()));
+
         view.findViewById(R.id.next).setOnClickListener(this);
         mSeekbar.setOnSeekBarChangeListener(this);
     }
@@ -49,8 +54,12 @@ public class SelectTimeFragment extends BaseFragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.next:
-                ((POCApplication) getActivity().getApplication()).setRecordTime(mSeekbar.getProgress());
-                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTitleFragment());
+                if (mSeekbar.getProgress() > 0) {
+                    ((POCApplication) getActivity().getApplication()).setRecordTime(mSeekbar.getProgress());
+                    ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTitleFragment());
+                } else {
+                    Toast.makeText(getActivity(), "Please select progress.", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
