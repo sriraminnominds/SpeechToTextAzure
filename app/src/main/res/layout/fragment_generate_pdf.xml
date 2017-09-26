@@ -5,16 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/recordeddata"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/save"
-        android:paddingLeft="@dimen/dimen_15"
-        android:paddingRight="@dimen/dimen_15"
-        android:scrollbars="vertical"
-        android:textColor="@color/black"
-        android:textSize="20sp"/>
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/recordeddata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_15"
+            android:scrollbars="vertical"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+    </ScrollView>
 
     <TextView
         android:id="@+id/save"
