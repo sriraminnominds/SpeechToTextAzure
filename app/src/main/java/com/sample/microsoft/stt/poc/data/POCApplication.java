@@ -9,6 +9,7 @@ import android.app.Application;
 public class POCApplication extends Application {
     private int mRecordTime = 0;
     private String mTitle;
+    private String mRecordedText;
 
     public int getRecordTime() {
         return mRecordTime;
@@ -24,6 +25,14 @@ public class POCApplication extends Application {
 
     public void setTitle(String mTitle) {
         this.mTitle = mTitle;
+    }
+
+    public String getRecordedText() {
+        return mRecordedText;
+    }
+
+    public void setRecordedText(String mRecordedText) {
+        this.mRecordedText = mRecordedText;
     }
 
     public void clear() {

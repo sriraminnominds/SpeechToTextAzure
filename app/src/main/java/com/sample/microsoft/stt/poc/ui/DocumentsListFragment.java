@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
+import com.sample.microsoft.stt.poc.data.POCApplication;
 
 /**
  * Created by sgarimella on 25/09/17.
@@ -36,6 +37,7 @@ public class DocumentsListFragment extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((POCApplication) getActivity().getApplication()).clear();
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTimeFragment());
             }
         });
