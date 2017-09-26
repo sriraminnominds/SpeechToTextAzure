@@ -20,7 +20,7 @@ import com.sample.microsoft.stt.poc.data.POCApplication;
  * Created by sgarimella on 26/09/17.
  */
 
-public class SelectTitleFragment extends BaseFragment implements View.OnClickListener {
+public class SelectTitleFragment extends BaseFragment implements View.OnClickListener, View.OnFocusChangeListener {
     private EditText mInput;
     private TextInputLayout mInputLayout;
 
@@ -47,7 +47,7 @@ public class SelectTitleFragment extends BaseFragment implements View.OnClickLis
         mInput.setText(((POCApplication) getActivity().getApplication()).getTitle());
 
         mInput.setFocusable(true);
-        showKeyboard();
+        mInput.setOnFocusChangeListener(this);
         mInputLayout.setError("");
         view.findViewById(R.id.next).setOnClickListener(this);
     }
@@ -58,7 +58,6 @@ public class SelectTitleFragment extends BaseFragment implements View.OnClickLis
             case R.id.next:
                 String title = mInput.getText().toString();
                 if (!TextUtils.isEmpty(title)) {
-                    hideKeyboard(mInput);
                     ((POCApplication) getActivity().getApplication()).setTitle(title);
                     ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
                 } else {
@@ -68,12 +67,7 @@ public class SelectTitleFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-
-    private void hideKeyboard(EditText view) {
+    private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
@@ -81,6 +75,12 @@ public class SelectTitleFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onPause() {
         super.onPause();
-        hideKeyboard(mInput);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if(!b){
+            hideKeyboard(view);
+        }
     }
 }
