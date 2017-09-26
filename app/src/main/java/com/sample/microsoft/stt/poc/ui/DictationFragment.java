@@ -216,7 +216,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
     public void done() {
         ((POCApplication) getActivity().getApplication()).setRecordedText(mRecordedData.toString());
-        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+        ((MicrosoftLandingActivity) getActivity()).setFragment(new PdfGeneratorFragment());
     }
 
     @Override

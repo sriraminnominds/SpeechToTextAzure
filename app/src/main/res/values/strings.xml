@@ -20,6 +20,7 @@
 
     <string name="mode_dictation">DICTATION</string>
     <string name="next">NEXT</string>
+    <string name="save">SAVE</string>
 
     <string name="my_notes">My Notes</string>
     <string name="select_mode">Select Mode</string>
@@ -32,4 +33,5 @@
     <string name="mode_text">Mode : %1$s</string>
     <string name="title_text">Title : %1$s</string>
     <string name="listening">Listening</string>
+    <string name="pdf_generator">Generate PDF</string>
 </resources>

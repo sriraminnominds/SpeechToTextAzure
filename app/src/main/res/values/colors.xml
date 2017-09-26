@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00489c</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="selected">#336699</color>
     <color name="mode_bg">#e3055b</color>
