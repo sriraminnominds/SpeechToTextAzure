@@ -11,6 +11,7 @@
     android:weightSum="1">
 
     <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.7"
@@ -22,6 +23,24 @@
             android:layout_height="wrap_content"
             android:text="@string/listening"
             android:textColor="@color/white"/>
+
+        <com.sample.microsoft.stt.poc.ui.custom.EqualizerView
+            android:id="@+id/equalizer"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_above="@+id/play_button"
+            android:layout_gravity="left"
+            android:layout_marginRight="@dimen/dimen_25"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:gravity="left"
+            app:barColor="@color/colorAccent"
+            app:barCount="100"
+            app:barWidth="5dp"
+            app:marginLeft="1dp"
+            app:marginRight="1dp"
+            app:runInBatterySaveMode="false"
+            tools:background="@color/colorAccent"
+            tools:layout_width="wrap_content"/>
 
 
     </LinearLayout>

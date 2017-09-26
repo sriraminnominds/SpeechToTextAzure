@@ -1,15 +1,15 @@
 
-Usquid:S3400"9Remove this method and declare a constant for this value.(¤яв­8ЭФШае+
 ?squid:S1148"#Use a logger to log this exception.(Ущуя8ЭФШае+
-Lsquid:S1172"+Remove this unused method parameter "arg0".(‚†ѕВыяяяя8ЭФШае+
-ssquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(‚†ѕВыяяяя8ЭФШае+
-Asquid:S1181"%Catch Exception instead of Throwable.(лЯ‹™8ЭФШае+
-Zsquid:S3400"9Remove this method and declare a constant for this value.(€н№ґъяяяя8ЭФШае+
+Asquid:S1166"%Either log or rethrow this exception.(лЯ‹™8ЭФШае+
 Asquid:S1166"%Either log or rethrow this exception.(Ќ”эѕ8ЭФШае+
+Usquid:S3400"9Remove this method and declare a constant for this value.(¤яв­8ЭФШае+
+ssquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(‚†ѕВыяяяя8ЭФШае+
+Zsquid:S3400"9Remove this method and declare a constant for this value.(€н№ґъяяяя8ЭФШае+
+?squid:S1148"#Use a logger to log this exception.(Ущуя8ЭФШае+
+Asquid:S1181"%Catch Exception instead of Throwable.(лЯ‹™8ЭФШае+
+Lsquid:S1172"+Remove this unused method parameter "arg0".(‚†ѕВыяяяя8ЭФШае+
 Asquid:S1166"%Either log or rethrow this exception.(лЯ‹™8ЭФШае+
-Usquid:S3400"9Remove this method and declare a constant for this value.(аФшў8ЭФШае+
 Nsquid:S1172"-Remove this unused method parameter "rGroup".(°ўЂьшяяяя8ЭФШае+
-?squid:S1148"#Use a logger to log this exception.(Ущуя8ЭФШае+
+Usquid:S3400"9Remove this method and declare a constant for this value.(аФшў8ЭФШае+
 Asquid:S1166"%Either log or rethrow this exception.(лЯ‹™8ЭФШае+
 ?squid:S1148"#Use a logger to log this exception.(Ущуя8ЭФШае+
-Asquid:S1166"%Either log or rethrow this exception.(лЯ‹™8ЭФШае+

@@ -1,26 +1,26 @@
 
+[
+squid:S899";Do something with the "boolean" value returned by "delete".(²Œ­ûÿÿÿÿ8²õŸœé+
+Ksquid:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ8¥¾èœé+
+gsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ºÖ8–·×ˆæ+
+Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
+Ysquid:S1854"8Remove this useless assignment to local variable "grid".(¡à¨¶úÿÿÿÿ8¥¾èœé+
+Ysquid:S2259"=NullPointerException might be thrown as 'bw' is nullable here(÷¹ª8¥¾èœé+
+Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
+Jsquid:S1481")Remove this unused "data" local variable.(ÙÙ¬ıÿÿÿÿ8ß†ìœé+
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¥¾èœé+
+Jsquid:S1068".Remove this unused "m_fileName" private field.(ìçõŞ8ñ²‡œé+
+Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
+Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¥¾èœé+
+Ksquid:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ8Óÿ›é+
 Ysquid:S1854"8Remove this useless assignment to local variable "data".(ÙÙ¬ıÿÿÿÿ8ß†ìœé+
-Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
-Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
 [
 squid:S899";Do something with the "boolean" value returned by "delete".(²Œ­ûÿÿÿÿ8¥¾èœé+
 b
 squid:S899"BDo something with the "boolean" value returned by "createNewFile".(Ğ’Íùÿÿÿÿ8ªü›é+
-<squid:S1170"!Make this final field static too.(Øª´'8–·×ˆæ+
-Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
-[
-squid:S899";Do something with the "boolean" value returned by "delete".(²Œ­ûÿÿÿÿ8²õŸœé+
-Ksquid:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ8Óÿ›é+
-Ysquid:S2259"=NullPointerException might be thrown as 'bw' is nullable here(÷¹ª8¥¾èœé+
-Asquid:S1166"%Either log or rethrow this exception.(ï­£Ä8¥¾èœé+
-Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¥¾èœé+
-=squid:S1170"!Make this final field static too.(Í¯ò—8–·×ˆæ+
-Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¥¾èœé+
-Jsquid:S1068".Remove this unused "m_fileName" private field.(ìçõŞ8ñ²‡œé+
-Jsquid:S1481")Remove this unused "data" local variable.(ÙÙ¬ıÿÿÿÿ8ß†ìœé+
-Ysquid:S1854"8Remove this useless assignment to local variable "grid".(¡à¨¶úÿÿÿÿ8¥¾èœé+
-gsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ºÖ8–·×ˆæ+
 =squid:S1170"!Make this final field static too.(ìçõŞ8ú¦„‰æ+
-Ksquid:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ8¥¾èœé+
+<squid:S1170"!Make this final field static too.(Øª´'8–·×ˆæ+
 b
 squid:S899"BDo something with the "boolean" value returned by "createNewFile".(Ğ’Íùÿÿÿÿ8¥¾èœé+
+=squid:S1170"!Make this final field static too.(Í¯ò—8–·×ˆæ+

@@ -15,6 +15,7 @@ import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.data.POCApplication;
+import com.sample.microsoft.stt.poc.ui.custom.EqualizerView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,12 +31,17 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private StringBuilder mRecordedData;
     private TextView mTimerView;
     private ImageView mPauseView;
+    private EqualizerView mEqualiser;
+
 
     public int mRecordTimeInSecs = 60;
     public int mRecordTimeInMins = 0;
     private Timer mTimer = new Timer();
 
     private boolean mPaused = false;
+
+    private final int MIN_BAR = 15;
+    private final int MAX_BAR = 25;
 
     @Nullable
     @Override
@@ -63,6 +69,9 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mPauseView.setOnClickListener(this);
         view.findViewById(R.id.reset).setOnClickListener(this);
         view.findViewById(R.id.done).setOnClickListener(this);
+
+        mEqualiser = view.findViewById(R.id.equalizer);
+        mEqualiser.stopBars();
     }
 
     @Override
@@ -91,6 +100,9 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
     @Override
     public void partial(byte state, String data) {
+        mEqualiser.stopBars();
+        mEqualiser.setBarCount(data.length());
+        mEqualiser.animateBars();
         Log.v(TAG, "partial : " + data);
     }
 
@@ -106,11 +118,13 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         } else {
             mRecordedView.scrollTo(0, 0);
         }
+        mEqualiser.stopBars();
     }
 
     @Override
     public void error(byte state, String data) {
         Log.v(TAG, "error : " + data);
+        mEqualiser.stopBars();
     }
 
     private void recordTimer() {
@@ -174,6 +188,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mTimer.purge();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+
+        mEqualiser.stopBars();
     }
 
     public void resume() {
@@ -182,6 +198,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         recordTimer();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
+
+        mEqualiser.stopBars();
     }
 
     public void done() {
