@@ -2,7 +2,7 @@ package com.sample.microsoft.stt.poc.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +41,22 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private void initialiseViews(View view) {
         mRecordedView = view.findViewById(R.id.recordeddata);
         mRecordedData = new StringBuilder();
+
         recordTimer(view);
+
+        String text = String.format(getResources().getString(R.string.mode_text), getResources().getString(R.string.dictation));
+        ((TextView) view.findViewById(R.id.mode_text_title)).setText(text);
+
+        String title = String.format(getResources().getString(R.string.title_text), "Sample Title for Interview text wonder how it is done");
+        ((TextView) view.findViewById(R.id.title_title_title)).setText(title);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.dictation_title));
+        ((MicrosoftLandingActivity) getActivity()).enableBackButton();
     }
 
     @Override
@@ -72,8 +87,14 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     public void complete(byte state, String data) {
         mRecordedData.append(data);
         mRecordedData.append('\n');
-        mRecordedData.append('\n');
         mRecordedView.setText(mRecordedData.toString());
+        mRecordedView.setMovementMethod(new ScrollingMovementMethod());
+        final int scrollAmount = mRecordedView.getLayout().getLineTop(mRecordedView.getLineCount()) - mRecordedView.getHeight();
+        if (scrollAmount > 0) {
+            mRecordedView.scrollTo(0, scrollAmount);
+        } else {
+            mRecordedView.scrollTo(0, 0);
+        }
         Log.v(TAG, "complete : " + data);
     }
 
@@ -92,10 +113,14 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
                     @Override
                     public void run() {
                         TextView tv = (TextView) view.findViewById(R.id.timer_text);
-                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        String time = String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                        String text = String.format(getResources().getString(R.string.time_remaining), time);
+                        tv.setText(text);
                         seconds -= 1;
                         if (seconds == 0) {
-                            tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                            time = String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                            text = String.format(getResources().getString(R.string.time_remaining), time);
+                            tv.setText(text);
 
                             seconds = 60;
                             minutes = minutes - 1;

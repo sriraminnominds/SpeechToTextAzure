@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#00489c</color>
+    <color name="colorPrimaryDark">#00489c</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#FFFFFF</color>
     <color name="selected">#336699</color>
     <color name="mode_bg">#e3055b</color>
+    <color name="dictation_header_bg">#002c60</color>
+    <color name="dictation_text_bg">#0062d6</color>
 
     <color name="point_color">#00BCD4</color>
     <color name="text_color">#D50000</color>

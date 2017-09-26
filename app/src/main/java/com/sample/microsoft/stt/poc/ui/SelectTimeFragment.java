@@ -32,12 +32,16 @@ public class SelectTimeFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initialiseViews(View view) {
-
+        view.findViewById(R.id.next).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-
+        switch (view.getId()) {
+            case R.id.next:
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTitleFragment());
+                break;
+        }
     }
 
     @Override
