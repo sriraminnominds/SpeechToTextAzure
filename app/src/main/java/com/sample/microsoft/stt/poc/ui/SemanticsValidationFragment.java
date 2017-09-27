@@ -56,8 +56,10 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
 
     private List<SemanticError> mErrors = new ArrayList<>();
     private String mSemanticText;
+
     private PopupWindow mPopupWindow;
     private SpannableString mErrorSpannable;
+    private View mProgressBar;
 
     @Nullable
     @Override
@@ -68,6 +70,8 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     }
 
     private void initialiseViews(View view) {
+        mProgressBar = view.findViewById(R.id.loading_progress_bar);
+
         mSemanticText = ((POCApplication) getActivity().getApplication()).getRecordedText();
         mRecordedView = ((TextView) view.findViewById(R.id.recordeddata));
         mRecordedView.setText(mSemanticText);
@@ -176,7 +180,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
                 mPopupWindow.dismiss();
-                String sub = mSemanticText.substring(error.getOffset(), error.getLength());
+                String sub = mSemanticText.substring(error.getOffset(), error.getOffset() + error.getLength());
                 mSemanticText = mSemanticText.replace(sub, error.getOptions().get(position));
                 ((POCApplication) getActivity().getApplication()).setRecordedText(mSemanticText);
                 checkForErrors();
@@ -188,7 +192,9 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
 
 
     private void checkForErrors() {
-        mSemanticText = ((POCApplication) getActivity().getApplication()).getRecordedText();;
+        mProgressBar.setVisibility(View.VISIBLE);
+        mSemanticText = ((POCApplication) getActivity().getApplication()).getRecordedText();
+        ;
         StringBuilder payload = new StringBuilder();
         payload.append("disabledRules=WHITESPACE_RULE&allowIncompleteResults=true&text=");
         payload.append(mSemanticText);
@@ -206,7 +212,14 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         getOkHttpCall(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -232,12 +245,15 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                             SemanticError error = new SemanticError(message, suggestions, offset, length);
                             mErrors.add(error);
                         }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showErrorSpans();
-                            }
-                        });
+                        if(getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressBar.setVisibility(View.GONE);
+                                    showErrorSpans();
+                                }
+                            });
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

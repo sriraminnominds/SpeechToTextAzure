@@ -34,4 +34,9 @@
         android:text="@string/text_continue"
         android:textColor="@color/white"/>
 
+    <include
+        android:id="@+id/loading_progress_bar"
+        layout="@layout/view_progress_bar"
+        android:visibility="gone"/>
+
 </RelativeLayout>
