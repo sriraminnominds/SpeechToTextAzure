@@ -37,6 +37,7 @@ public class DocumentsListFragment extends BaseFragment {
     private List<Record> mFiles = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private DocumentsListAdapter mListAdapter;
+    private TextView mEmptyList;
 
     @Nullable
     @Override
@@ -70,10 +71,11 @@ public class DocumentsListFragment extends BaseFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mListAdapter);
 
+        mEmptyList = view.findViewById(R.id.no_list);
         if (mFiles.isEmpty()) {
-            view.findViewById(R.id.no_list).setVisibility(View.VISIBLE);
+            mEmptyList.setVisibility(View.VISIBLE);
         } else {
-            view.findViewById(R.id.no_list).setVisibility(View.GONE);
+            mEmptyList.setVisibility(View.GONE);
         }
     }
 
@@ -92,6 +94,11 @@ public class DocumentsListFragment extends BaseFragment {
                 }
                 Collections.sort(mFiles, Collections.reverseOrder());
             }
+        }
+        if (mFiles.isEmpty()) {
+            mEmptyList.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyList.setVisibility(View.GONE);
         }
     }
 
