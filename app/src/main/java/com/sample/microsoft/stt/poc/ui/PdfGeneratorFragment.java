@@ -122,8 +122,6 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
             document.finishPage(page);
             document.writeTo(fOut);
             document.close();
-
-            Toast.makeText(getActivity(), "Created Meeting notes document in the Documents folder", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             Log.i("error", e.getLocalizedMessage());
         } finally {
