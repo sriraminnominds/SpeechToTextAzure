@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
@@ -54,7 +53,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
     public void onStart() {
         super.onStart();
         ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.pdf_generator));
-        ((MicrosoftLandingActivity) getActivity()).enableBackButton();
+        ((MicrosoftLandingActivity) getActivity()).disableBackButton();
     }
 
     @Override

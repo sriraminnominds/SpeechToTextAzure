@@ -55,6 +55,11 @@ public class MicrosoftLandingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    public void disableBackButton() {
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
     @Override
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();

@@ -145,7 +145,7 @@ public class DocumentsListFragment extends BaseFragment {
                 Record prevRecord = getItem(Math.max(0, position - 1));
                 if ((position == 0) || !isMessageInSameDate(record, prevRecord)) {
                     holder.pinnedDate.setVisibility(View.VISIBLE);
-                    SimpleDateFormat df2 = new SimpleDateFormat("EEE MMM dd, yyyy");
+                    SimpleDateFormat df2 = new SimpleDateFormat("MMMM dd, yyyy");
                     holder.pinnedDate.setText(df2.format(record.getLastModifiedDate()));
                 } else {
                     holder.pinnedDate.setVisibility(View.GONE);
