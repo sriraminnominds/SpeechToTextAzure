@@ -35,7 +35,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private EqualizerView mEqualiser;
 
 
-    public int mRecordTimeInSecs = 60;
+    public int mRecordTimeInSecs = 59;
     public int mRecordTimeInMins = 0;
     private Timer mTimer = new Timer();
 
@@ -154,7 +154,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
                             text = String.format(getResources().getString(R.string.time_remaining), time);
                             mTimerView.setText(text);
 
-                            mRecordTimeInSecs = 60;
+                            mRecordTimeInSecs = 59;
                             mRecordTimeInMins = mRecordTimeInMins - 1;
                             if (mRecordTimeInMins < 0) {
                                 done();
@@ -172,7 +172,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
         mRecordedData = new StringBuilder();
         mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
-        mRecordTimeInSecs = 60;
+        mRecordTimeInSecs = 59;
         mRecordedView.setText(mRecordedData.toString());
 
         //pause and stop timer
