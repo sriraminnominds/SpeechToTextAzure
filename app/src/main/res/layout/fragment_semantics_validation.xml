@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/dimen_20"
         android:background="@color/mode_bg"
         android:gravity="center"
-        android:text="@string/text_continue"
+        android:text="@string/pdf_generator"
         android:textColor="@color/white"/>
 
     <include

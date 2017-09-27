@@ -1,14 +1,22 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +38,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +59,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
  */
 
 public class SemanticsValidationFragment extends BaseFragment implements View.OnClickListener {
+    private final String TAG = "SemanticsValidationFragment";
     private TextView mRecordedView;
 
     private final String API_END_POINT = "https://languagetool.org/api/v2/check";
@@ -95,7 +106,10 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                 if (mPopupWindow.isShowing()) {
                     mPopupWindow.dismiss();
                 }
-                ((MicrosoftLandingActivity) getActivity()).setFragment(new PdfGeneratorFragment());
+                if (isStoragePermissionGranted()) {
+                    writeToPdf();
+                    ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                }
                 break;
             case R.id.recordeddata:
                 break;
@@ -212,7 +226,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         getOkHttpCall(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if(getActivity() != null) {
+                if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -245,7 +259,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                             SemanticError error = new SemanticError(message, suggestions, offset, length);
                             mErrors.add(error);
                         }
-                        if(getActivity() != null) {
+                        if (getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -280,5 +294,67 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
             call.enqueue(callback);
         }
         return call;
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            writeToPdf();
+        }
+    }
+
+    private void writeToPdf() {
+        FileOutputStream fOut = null;
+        try {
+            String title = ((POCApplication) getActivity().getApplication()).getTitle();
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + File.separator + "Notes";
+            File folder = new File(path);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            String fileName = title + ".pdf";
+            final File file = new File(path, fileName);
+            file.createNewFile();
+            fOut = new FileOutputStream(file);
+
+            PdfDocument document = new PdfDocument();
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
+            int width = displayMetrics.widthPixels;
+
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
+            PdfDocument.Page page = document.startPage(pageInfo);
+
+            mRecordedView.draw(page.getCanvas());
+
+            document.finishPage(page);
+            document.writeTo(fOut);
+            document.close();
+        } catch (IOException e) {
+            Log.i("error", e.getLocalizedMessage());
+        } finally {
+            try {
+                if (fOut != null) {
+                    fOut.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

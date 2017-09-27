@@ -4,7 +4,7 @@
     android:id="@+id/rl_custom_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1e000000">
+    android:background="#D3D3D3">
 
     <LinearLayout
         android:id="@+id/options_header"
