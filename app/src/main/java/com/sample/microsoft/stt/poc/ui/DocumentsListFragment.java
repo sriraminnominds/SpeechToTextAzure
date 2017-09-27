@@ -1,16 +1,22 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
@@ -107,17 +113,23 @@ public class DocumentsListFragment extends BaseFragment {
 
         public class DocumentsListHolder extends RecyclerView.ViewHolder {
             public TextView name, date, pinnedDate;
+            public ImageView more;
 
             public DocumentsListHolder(View view) {
                 super(view);
                 name = view.findViewById(R.id.name);
                 date = view.findViewById(R.id.date);
                 pinnedDate = view.findViewById(R.id.date_pinned);
+                more = view.findViewById(R.id.more);
             }
         }
 
         public DocumentsListAdapter(List<Record> DocumentsListAdapter) {
             this.recordsList = DocumentsListAdapter;
+        }
+
+        public void setList(List<Record> list) {
+            this.recordsList = list;
         }
 
         @Override
@@ -128,7 +140,7 @@ public class DocumentsListFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(DocumentsListHolder holder, int position) {
-            Record record = getItem(position);
+            final Record record = getItem(position);
             if (record != null) {
                 Record prevRecord = getItem(Math.max(0, position - 1));
                 if ((position == 0) || !isMessageInSameDate(record, prevRecord)) {
@@ -142,6 +154,13 @@ public class DocumentsListFragment extends BaseFragment {
                 holder.name.setText(formatStringToCaps(record.getRecordName()));
                 DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                 holder.date.setText(dateFormat.format(record.getLastModifiedDate()));
+
+                holder.more.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showOptionsMenu(v, record);
+                    }
+                });
             }
         }
 
@@ -182,5 +201,48 @@ public class DocumentsListFragment extends BaseFragment {
         boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
         return sameDay;
+    }
+
+    private void showOptionsMenu(View view, final Record record) {
+        PopupMenu popup = new PopupMenu(getActivity(), view);
+        popup.inflate(R.menu.document_list_options);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_view:
+                        viewFile(record.getPath());
+                        break;
+                    case R.id.action_delete:
+                        deleteFile(record.getPath());
+                        break;
+                }
+                return false;
+            }
+        });
+        popup.show();
+    }
+
+    private void deleteFile(String path) {
+        File f = new File(path);
+        if (f.exists()) {
+            f.delete();
+        }
+        getFilesFromDir();
+        mListAdapter.setList(mFiles);
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    private void viewFile(String path) {
+        File file = new File(path);
+        Intent target = new Intent(Intent.ACTION_VIEW);
+        target.setDataAndType(Uri.fromFile(file), "application/pdf");
+        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        Intent intent = Intent.createChooser(target, "Open File");
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Instruct the user to install a PDF reader here, or something
+        }
     }
 }
