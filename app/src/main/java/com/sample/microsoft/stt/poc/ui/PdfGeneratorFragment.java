@@ -53,7 +53,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
     public void onStart() {
         super.onStart();
         ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.pdf_generator));
-        ((MicrosoftLandingActivity) getActivity()).disableBackButton();
+        ((MicrosoftLandingActivity) getActivity()).enableBackButton();
     }
 
     @Override
