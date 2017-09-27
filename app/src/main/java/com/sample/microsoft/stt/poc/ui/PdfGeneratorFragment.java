@@ -25,8 +25,6 @@ import com.sample.microsoft.stt.poc.data.POCApplication;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by sgarimella on 26/09/17.
@@ -105,9 +103,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
             if (!folder.exists()) {
                 folder.mkdirs();
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            Date now = new Date();
-            String fileName = title + " - " + dateFormat.format(now) + ".pdf";
+            String fileName = title + ".pdf";
             final File file = new File(path, fileName);
             file.createNewFile();
             fOut = new FileOutputStream(file);
