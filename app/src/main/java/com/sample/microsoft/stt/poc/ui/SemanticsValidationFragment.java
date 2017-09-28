@@ -107,7 +107,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.icontinue:
-                if (mPopupWindow.isShowing()) {
+                if ((mPopupWindow != null) && mPopupWindow.isShowing()) {
                     mPopupWindow.dismiss();
                 }
                 String title = ((POCApplication) getActivity().getApplication()).getTitle();
@@ -128,7 +128,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     @Override
     public void onPause() {
         super.onPause();
-        if (mPopupWindow.isShowing()) {
+        if ((mPopupWindow != null) && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
     }
@@ -136,8 +136,10 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPopupWindow.dismiss();
-        mPopupWindow = null;
+        if (mPopupWindow != null) {
+            mPopupWindow.dismiss();
+            mPopupWindow = null;
+        }
     }
 
     private void showErrorSpans() {
@@ -215,7 +217,9 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPopupWindow.dismiss();
+                if (mPopupWindow != null) {
+                    mPopupWindow.dismiss();
+                }
             }
         });
 
@@ -229,7 +233,9 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         optionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-                mPopupWindow.dismiss();
+                if (mPopupWindow != null) {
+                    mPopupWindow.dismiss();
+                }
                 String sub = mSemanticText.substring(error.getOffset(), error.getOffset() + error.getLength());
                 mSemanticText = mSemanticText.replace(sub, error.getOptions().get(position));
                 ((POCApplication) getActivity().getApplication()).setRecordedText(mSemanticText);
