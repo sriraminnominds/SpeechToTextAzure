@@ -33,6 +33,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private TextView mTimerView;
     private ImageView mPauseView;
     private EqualizerView mEqualiser;
+    private ImageView mDone;
 
 
     public int mRecordTimeInSecs = 59;
@@ -70,7 +71,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mPauseView = view.findViewById(R.id.pauserecord);
         mPauseView.setOnClickListener(this);
         view.findViewById(R.id.reset).setOnClickListener(this);
-        view.findViewById(R.id.done).setOnClickListener(this);
+        mDone = view.findViewById(R.id.done);
+        mDone.setOnClickListener(this);
 
         mEqualiser = view.findViewById(R.id.equalizer);
         mEqualiser.stopBars();
@@ -106,6 +108,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mEqualiser.setBarCount(data.length());
         mEqualiser.animateBars();
         Log.v(TAG, "partial : " + data);
+        mDone.setEnabled(false);
+        mRecordedView.setText(mRecordedData.toString() + data);
     }
 
     @Override
@@ -114,6 +118,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
             resetAudioListener();
             return;
         }
+        mDone.setEnabled(true);
         mRecordedData.append(data);
         mRecordedData.append('\n');
         mRecordedView.setText(mRecordedData.toString());
