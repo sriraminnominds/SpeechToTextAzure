@@ -1,7 +1,12 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -45,6 +50,8 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     private final int MIN_BAR = 15;
     private final int MAX_BAR = 25;
 
+    private final int REQUEST_MICROPHONE = 1;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,6 +83,9 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
         mEqualiser = view.findViewById(R.id.equalizer);
         mEqualiser.stopBars();
+
+        ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+        requestForPermissions();
     }
 
     @Override
@@ -245,6 +255,27 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
                 break;
             case R.id.done:
                 done();
+                break;
+        }
+    }
+
+    private void requestForPermissions() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
+                ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+                resetAudioListener();
+            } else {
+                  requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MICROPHONE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_MICROPHONE:
+                ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+                resetAudioListener();
                 break;
         }
     }

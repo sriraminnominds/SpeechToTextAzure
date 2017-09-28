@@ -24,14 +24,16 @@ public class MicrosoftLandingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_microsoft_landing);
 
+        getSupportFragmentManager().findFragmentById(R.id.frame_container);
+        setFragment(new DocumentsListFragment());
+    }
+
+    public void initialiseCognitiveServices() {
         // Initialise Cognitive Services
         mHelper = new CognitiveServicesHelper();
         String language = "en-us";
         String subscriptionKey = this.getString(R.string.primaryKey);
         mHelper.initializeRecoClient(this, language, subscriptionKey, SpeechRecognitionMode.LongDictation);
-
-        getSupportFragmentManager().findFragmentById(R.id.frame_container);
-        setFragment(new DocumentsListFragment());
     }
 
     public CognitiveServicesHelper getSpeechHelper() {
