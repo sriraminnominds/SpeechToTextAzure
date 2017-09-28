@@ -63,6 +63,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         ((TextView) view.findViewById(R.id.mode_text_title)).setText(text);
 
         String t = ((POCApplication) getActivity().getApplication()).getTitle();
+        t = TextUtils.isEmpty(t) ? "Untitled" : t;
         String title = String.format(getResources().getString(R.string.title_text), t);
         ((TextView) view.findViewById(R.id.title_title_title)).setText(title);
 
@@ -111,6 +112,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     public void complete(byte state, String data) {
         if (TextUtils.isEmpty(data) || "null".equalsIgnoreCase(data)) {
             resetAudioListener();
+            return;
         }
         mRecordedData.append(data);
         mRecordedData.append('\n');
