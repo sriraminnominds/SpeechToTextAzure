@@ -1,6 +1,7 @@
 package com.sample.microsoft.stt.poc.ui;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.pdf.PdfDocument;
@@ -8,11 +9,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
@@ -23,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -106,9 +110,14 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                 if (mPopupWindow.isShowing()) {
                     mPopupWindow.dismiss();
                 }
-                if (isStoragePermissionGranted()) {
-                    writeToPdf();
-                    ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                String title = ((POCApplication) getActivity().getApplication()).getTitle();
+                if (TextUtils.isEmpty(title)) {
+                    showTitleDialog();
+                } else {
+                    if (isStoragePermissionGranted()) {
+                        writeToPdf();
+                        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                    }
                 }
                 break;
             case R.id.recordeddata:
@@ -140,6 +149,33 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         mRecordedView.setText(mErrorSpannable);
         mRecordedView.setMovementMethod(LinkMovementMethod.getInstance());
         mRecordedView.setHighlightColor(Color.YELLOW);
+    }
+
+    private void showTitleDialog() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.view_title_dialog);
+        final TextInputLayout layout = (TextInputLayout) dialog.findViewById(R.id.input_layout_title);
+        final EditText text = dialog.findViewById(R.id.input_title);
+        dialog.show();
+
+        TextView acceptButton = (TextView) dialog.findViewById(R.id.next);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = text.getText().toString();
+                if (!TextUtils.isEmpty(title)) {
+                    dialog.dismiss();
+                    ((POCApplication) getActivity().getApplication()).setTitle(title);
+                    if (isStoragePermissionGranted()) {
+                        writeToPdf();
+                        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                    }
+                } else {
+                    layout.setError("Please enter title of document");
+                }
+            }
+        });
+
     }
 
     private static class ErrorClickableSpan extends ClickableSpan {

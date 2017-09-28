@@ -38,4 +38,7 @@
     <string name="check_errors">Check Errors</string>
 
     <string name="no_notes">Click on the FAB button to start creating audio notes.</string>
+
+    <string name="instructions">Default Recording time is for 5 Mins.\n\nPress [img src=ic_repeat/] to reset the recording. \n\nPress [img src=ic_done/] when you are done with the recording.</string>
+
 </resources>

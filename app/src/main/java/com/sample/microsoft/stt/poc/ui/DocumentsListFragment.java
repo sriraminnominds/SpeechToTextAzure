@@ -1,5 +1,6 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.data.Record;
+import com.sample.microsoft.stt.poc.ui.custom.TextViewWithImages;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -44,6 +46,7 @@ public class DocumentsListFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private DocumentsListAdapter mListAdapter;
     private TextView mEmptyList;
+    private Dialog mDialog;
 
     @Nullable
     @Override
@@ -65,8 +68,11 @@ public class DocumentsListFragment extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((POCApplication) getActivity().getApplication()).clear();
-                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTimeFragment());
+//                ((POCApplication) getActivity().getApplication()).clear();
+//                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTimeFragment());
+                if (mDialog == null || !mDialog.isShowing()) {
+                    showInstructionsDialog();
+                }
             }
         });
 
@@ -244,5 +250,26 @@ public class DocumentsListFragment extends BaseFragment {
         } catch (ActivityNotFoundException e) {
             // Instruct the user to install a PDF reader here, or something
         }
+    }
+
+    private void showInstructionsDialog() {
+        mDialog = new Dialog(getActivity());
+        mDialog.setContentView(R.layout.view_instructions_dialog);
+        mDialog.setTitle("Instructions");
+        TextViewWithImages text = (TextViewWithImages) mDialog.findViewById(R.id.dialog_message);
+        text.setText(getString(R.string.instructions));
+        mDialog.show();
+
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Close dialog
+                mDialog.dismiss();
+                ((POCApplication) getActivity().getApplication()).clear();
+                ((POCApplication) getActivity().getApplication()).setRecordTime(5);
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
+            }
+        });
     }
 }
