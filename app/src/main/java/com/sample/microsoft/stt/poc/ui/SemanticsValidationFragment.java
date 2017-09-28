@@ -343,7 +343,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
             if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
@@ -356,6 +356,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             writeToPdf();
+            ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
         }
     }
 
