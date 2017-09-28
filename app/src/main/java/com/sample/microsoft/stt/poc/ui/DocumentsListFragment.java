@@ -68,8 +68,6 @@ public class DocumentsListFragment extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ((POCApplication) getActivity().getApplication()).clear();
-//                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTimeFragment());
                 if (mDialog == null || !mDialog.isShowing()) {
                     showInstructionsDialog();
                 }
