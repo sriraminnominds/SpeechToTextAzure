@@ -91,32 +91,32 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(SocketConstants.Messaging.EmitKeyWord.SEND_TYPING, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    String sendTyping = args[0].toString();
-                    if (mContract != null) {
-                        mContract.onTyping(sendTyping);
-                    }
-                }
-            });
-
-            mSocket.on(SocketConstants.Messaging.EmitKeyWord.NEW_MESSAGE, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.START_MEETING, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String newMessage = args[0].toString();
                     if (mContract != null) {
-                        mContract.onMessageReceived(newMessage);
+                        mContract.onMeetingStarted(newMessage);
                     }
                 }
             });
 
-            mSocket.on(SocketConstants.Messaging.EmitKeyWord.MESSAGE_UPDATED, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.END_MEETING, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String newMessage = args[0].toString();
                     if (mContract != null) {
-                        mContract.onMessagesUpdated(newMessage);
+                        mContract.onMeetingEnd(newMessage);
+                    }
+                }
+            });
+
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.USER_LEFT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    String userLeft = args[0].toString();
+                    if (mContract != null) {
+                        mContract.onUserLeft(userLeft);
                     }
                 }
             });

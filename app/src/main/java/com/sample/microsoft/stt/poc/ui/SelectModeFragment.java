@@ -1,21 +1,27 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
+import com.sample.microsoft.stt.poc.data.POCApplication;
+import com.sample.microsoft.stt.poc.ui.custom.TextViewWithImages;
 
 /**
  * Created by sgarimella on 25/09/17.
  */
 
 public class SelectModeFragment extends BaseFragment implements View.OnClickListener {
+    private Dialog mDialog;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,13 +39,19 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
 
     private void initialiseViews(View view) {
         view.findViewById(R.id.mode_dictation).setOnClickListener(this);
+        view.findViewById(R.id.mode_meeting_notes).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.mode_dictation:
-                ((MicrosoftLandingActivity) getActivity()).setFragment(new SelectTimeFragment());
+                if (mDialog == null || !mDialog.isShowing()) {
+                    showDictationInstructionsDialog();
+                }
+                break;
+            case R.id.mode_meeting_notes:
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingNotesFragment());
                 break;
         }
     }
@@ -54,5 +66,26 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showDictationInstructionsDialog() {
+        mDialog = new Dialog(getActivity());
+        mDialog.setContentView(R.layout.view_instructions_dialog);
+        mDialog.setTitle("Instructions");
+        TextViewWithImages text = (TextViewWithImages) mDialog.findViewById(R.id.dialog_message);
+        text.setText(getString(R.string.instructions));
+        mDialog.show();
+
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Close dialog
+                mDialog.dismiss();
+                ((POCApplication) getActivity().getApplication()).clear();
+                ((POCApplication) getActivity().getApplication()).setRecordTime(5);
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
+            }
+        });
     }
 }

@@ -26,19 +26,9 @@ public interface SocketResponseContract {
     void onUserLeft(String user);
 
     /**
-     * received typing
-     */
-    void onTyping(String typing);
-
-    /**
      * received message
      */
     void onMessageReceived(String message);
-
-    /**
-     * received messages update
-     */
-    void onMessagesUpdated(String messages);
 
     /**
      * receive new user connect to room
@@ -49,4 +39,14 @@ public interface SocketResponseContract {
      * receive socket error
      */
     void onSocketError(int code);
+
+    /**
+     * receive socket error
+     */
+    void onMeetingStarted(String message);
+
+    /**
+     * receive socket error
+     */
+    void onMeetingEnd(String message);
 }
