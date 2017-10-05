@@ -266,7 +266,7 @@ public class DocumentsListFragment extends BaseFragment {
                 mDialog.dismiss();
                 ((POCApplication) getActivity().getApplication()).clear();
                 ((POCApplication) getActivity().getApplication()).setRecordTime(5);
-                ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingNotesFragment());
             }
         });
     }

@@ -3,9 +3,6 @@ package com.sample.microsoft.stt.poc.socket;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.viridis.student.ViridisApplicationConstants;
-import com.viridis.student.utils.ViridisException;
-import com.viridis.student.utils.ViridisLog;
 
 import org.json.JSONObject;
 
@@ -75,7 +72,7 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.NEW_USER, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.NEW_USER, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     if (mContract != null) {
@@ -84,7 +81,7 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.USER_LEFT, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.USER_LEFT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String userLeft = args[0].toString();
@@ -94,7 +91,7 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.SEND_TYPING, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.SEND_TYPING, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String sendTyping = args[0].toString();
@@ -104,7 +101,7 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.NEW_MESSAGE, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.NEW_MESSAGE, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String newMessage = args[0].toString();
@@ -114,7 +111,7 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.MESSAGE_UPDATED, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.MESSAGE_UPDATED, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String newMessage = args[0].toString();
@@ -124,15 +121,15 @@ public class SocketHelper implements SocketRequestContract {
                 }
             });
 
-            mSocket.on(ViridisApplicationConstants.Messaging.EmitKeyWord.SOCKET_ERROR, new Emitter.Listener() {
+            mSocket.on(SocketConstants.Messaging.EmitKeyWord.SOCKET_ERROR, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     String response = args[0].toString();
-                    ViridisLog.chatVerbose("Response ::: " + response);
+                    //ViridisLog.chatVerbose("Response ::: " + response);
                 }
             });
         } catch (URISyntaxException e) {
-            throw new ViridisException("Error parsing Socket", e);
+            //throw new ViridisException("Error parsing Socket", e);
         }
     }
 
