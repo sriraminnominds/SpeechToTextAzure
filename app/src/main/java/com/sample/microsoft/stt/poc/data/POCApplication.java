@@ -10,6 +10,9 @@ public class POCApplication extends Application {
     private int mRecordTime = 0;
     private String mTitle;
     private String mRecordedText;
+    private String mAttendeeName;
+    private boolean isOrganiser;
+    private String mMeetingId;
 
     public int getRecordTime() {
         return mRecordTime;
@@ -35,7 +38,31 @@ public class POCApplication extends Application {
         this.mRecordedText = mRecordedText;
     }
 
-    public void clear() {
+    public String getAttendeeName() {
+        return mAttendeeName;
+    }
+
+    public void setAttendeeName(String name) {
+        this.mAttendeeName = name;
+    }
+
+    public boolean isOrganiser() {
+        return isOrganiser;
+    }
+
+    public void setOrganiser(boolean organiser) {
+        isOrganiser = organiser;
+    }
+
+    public String getMeetingId() {
+        return mMeetingId;
+    }
+
+    public void setMeetingId(String meetingId) {
+        this.mMeetingId = meetingId;
+    }
+
+    public void clearDictation() {
         mRecordTime = 0;
         mTitle = "";
     }

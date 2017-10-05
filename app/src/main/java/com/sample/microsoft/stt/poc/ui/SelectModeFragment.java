@@ -82,7 +82,7 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
             public void onClick(View v) {
                 // Close dialog
                 mDialog.dismiss();
-                ((POCApplication) getActivity().getApplication()).clear();
+                ((POCApplication) getActivity().getApplication()).clearDictation();
                 ((POCApplication) getActivity().getApplication()).setRecordTime(5);
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
             }

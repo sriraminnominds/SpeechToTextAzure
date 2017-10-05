@@ -1,17 +1,24 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
+import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.socket.SocketHelper;
 import com.sample.microsoft.stt.poc.socket.SocketRequestContract;
 import com.sample.microsoft.stt.poc.socket.SocketResponseContract;
@@ -33,9 +40,13 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private SocketRequestContract mSocketRequest;
     private EqualizerView mEqualiser;
 
-    private String mMeetingId = "11538";
+    private Dialog mDialog;
+
+    private String mMeetingId = "";
     public boolean mIsOrganiser = false;
-    public String mAttendeeName = "Rahul";
+    public String mAttendeeName = "";
+
+    private TextView mMeetingIdTV;
 
     @Nullable
     @Override
@@ -48,6 +59,10 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private void initialiseViews(View view) {
         mEqualiser = view.findViewById(R.id.equalizer);
         mEqualiser.stopBars();
+
+        String text = String.format(getResources().getString(R.string.mode_meeting), mMeetingId);
+        mMeetingIdTV = (TextView) view.findViewById(R.id.mode_text_title);
+        mMeetingIdTV.setText(text);
     }
 
     @Override
@@ -76,7 +91,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
 
         sendMeetingMsg(false);
-        //mSocketRequest.closeAndDisconnectSocket();
     }
 
     @Override
@@ -116,7 +130,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         try {
             if (mSocketRequest.isSocketConnected()) {
                 JSONObject jMsg = new JSONObject();
-                jMsg.put("meetingId", !mIsOrganiser ? mMeetingId : "");
+                jMsg.put("meetingId", mMeetingId);
                 jMsg.put("userId", AppUtils.getDeviceUniqueId(getActivity()));
                 jMsg.put("userName", mAttendeeName);
                 jMsg.put("isOrganizer", mIsOrganiser);
@@ -152,12 +166,62 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         }
     }
 
+    private void showMeetingNotesDialog() {
+        mDialog = new Dialog(getActivity());
+        mDialog.setContentView(R.layout.view_meeting_notes_dialog);
+
+        final EditText userNameET = (EditText) mDialog.findViewById(R.id.input_et_userName);
+        final EditText meetingIdET = (EditText) mDialog.findViewById(R.id.input_et_meeting_id);
+        final TextInputLayout meetingIdLayout = (TextInputLayout) mDialog.findViewById(R.id.input_layout_meeting_id);
+        final CheckBox isOrganiserCB = mDialog.findViewById(R.id.input_cb_isorganiser);
+        isOrganiserCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    meetingIdLayout.setVisibility(View.GONE);
+                } else {
+                    meetingIdLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mDialog.show();
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+
+                mMeetingId = meetingIdET.getText().toString();
+                mIsOrganiser = isOrganiserCB.isChecked();
+                mAttendeeName = userNameET.getText().toString();
+
+                ((POCApplication) getActivity().getApplication()).setMeetingId(mMeetingId);
+                ((POCApplication) getActivity().getApplication()).setAttendeeName(mAttendeeName);
+                ((POCApplication) getActivity().getApplication()).setOrganiser(mIsOrganiser);
+
+                sendMeetingMsg(true);
+            }
+        });
+    }
+
 
     SocketResponseContract mSocketResp = new SocketResponseContract() {
         @Override
         public void onConnect() {
             Log.v(TAG, "Socket : onConnect ");
-            sendMeetingMsg(true);
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (TextUtils.isEmpty(mMeetingId)) {
+                            if (mDialog == null || !mDialog.isShowing()) {
+                                showMeetingNotesDialog();
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         @Override
@@ -196,10 +260,20 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
             try {
                 JSONObject data = new JSONObject(message);
                 mMeetingId = data.getString("meetingId");
+                ((POCApplication) getActivity().getApplication()).setMeetingId(mMeetingId);
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String text = String.format(getResources().getString(R.string.mode_meeting), mMeetingId);
+                            mMeetingIdTV.setText(text);
+                        }
+                    });
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
 
         @Override
