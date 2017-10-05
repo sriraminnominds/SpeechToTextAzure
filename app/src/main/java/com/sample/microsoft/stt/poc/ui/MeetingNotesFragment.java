@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
@@ -34,7 +36,7 @@ import java.util.Date;
  * Created by sgarimella on 18/09/17.
  */
 
-public class MeetingNotesFragment extends BaseFragment implements CognitiveServicesHelper.RecorderListener {
+public class MeetingNotesFragment extends BaseFragment implements CognitiveServicesHelper.RecorderListener, View.OnClickListener {
     private final String TAG = "MeetingNotesFragment";
 
     private SocketRequestContract mSocketRequest;
@@ -47,11 +49,15 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     public String mAttendeeName = "";
 
     private TextView mMeetingIdTV;
+    private TextView mAttendeeTV;
+    private ImageView mDone;
+    private TextView mRecordedView;
+    private StringBuilder mRecordedData;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_dictation, null);
+        View v = inflater.inflate(R.layout.fragment_meeting_notes, null);
         initialiseViews(v);
         return v;
     }
@@ -63,6 +69,16 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         String text = String.format(getResources().getString(R.string.mode_meeting), mMeetingId);
         mMeetingIdTV = (TextView) view.findViewById(R.id.mode_text_title);
         mMeetingIdTV.setText(text);
+
+        String userName = String.format(getResources().getString(R.string.mode_meeting_name), mAttendeeName);
+        mAttendeeTV = (TextView) view.findViewById(R.id.title_title_title);
+        mAttendeeTV.setText(userName);
+
+        mDone = view.findViewById(R.id.donerecord);
+        mDone.setOnClickListener(this);
+
+        mRecordedView = view.findViewById(R.id.recordeddata);
+        mRecordedData = new StringBuilder();
     }
 
     @Override
@@ -91,11 +107,12 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
 
         sendMeetingMsg(false);
+        mMeetingIdTV = null;
+        mAttendeeName = null;
     }
 
     @Override
     public void partial(byte state, String data) {
-        //Log.v(TAG, "Azure : partial Message : " + data);
         if (TextUtils.isEmpty(data) || "null".equalsIgnoreCase(data)) {
             resetAudioListener();
             return;
@@ -103,11 +120,26 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         mEqualiser.stopBars();
         mEqualiser.setBarCount(data.length());
         mEqualiser.animateBars();
+
+        mDone.setEnabled(false);
+        mRecordedView.setText(mRecordedData.toString() + data);
     }
 
     @Override
     public void complete(byte state, String data) {
         sendMessage(data);
+
+        mDone.setEnabled(true);
+        mRecordedData.append(data);
+        mRecordedData.append('\n');
+        mRecordedView.setText(mRecordedData.toString());
+        mRecordedView.setMovementMethod(new ScrollingMovementMethod());
+        final int scrollAmount = mRecordedView.getLayout().getLineTop(mRecordedView.getLineCount()) - mRecordedView.getHeight();
+        if (scrollAmount > 0) {
+            mRecordedView.scrollTo(0, scrollAmount);
+        } else {
+            mRecordedView.scrollTo(0, 0);
+        }
         mEqualiser.stopBars();
     }
 
@@ -150,7 +182,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
     private void sendMessage(String msg) {
         try {
-            if (mSocketRequest.isSocketConnected()) {
+            if (mSocketRequest.isSocketConnected() && !TextUtils.isEmpty(msg)) {
                 JSONObject jMsg = new JSONObject();
                 jMsg.put("meetingId", mMeetingId);
                 jMsg.put("userId", AppUtils.getDeviceUniqueId(getActivity()));
@@ -205,6 +237,23 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         });
     }
 
+    private void showConfirmationDialog() {
+        mDialog = new Dialog(getActivity());
+        mDialog.setContentView(R.layout.view_share_meeting_id_dialog);
+
+        final TextView dataTv = (TextView) mDialog.findViewById(R.id.dialog_data);
+        dataTv.setText(getString(R.string.meeting_notes_problem));
+
+        mDialog.show();
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+                getActivity().onBackPressed();
+            }
+        });
+    }
 
     SocketResponseContract mSocketResp = new SocketResponseContract() {
         @Override
@@ -227,6 +276,14 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         @Override
         public void onSocketFailed() {
             Log.v(TAG, "Socket : onSocketFailed ");
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showConfirmationDialog();
+                    }
+                });
+            }
         }
 
         @Override
@@ -268,6 +325,9 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                         public void run() {
                             String text = String.format(getResources().getString(R.string.mode_meeting), mMeetingId);
                             mMeetingIdTV.setText(text);
+
+                            String userName = String.format(getResources().getString(R.string.mode_meeting_name), mAttendeeName);
+                            mAttendeeTV.setText(userName);
                         }
                     });
                 }
@@ -282,4 +342,12 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
             mSocketRequest.closeAndDisconnectSocket();
         }
     };
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.donerecord:
+                break;
+        }
+    }
 }

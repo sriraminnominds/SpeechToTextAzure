@@ -20,6 +20,8 @@
 
     <string name="meeting_notes_user_name">Enter your name</string>
     <string name="meeting_notes_meeting_id">Enter your meeting Id</string>
+    <string name="meeting_notes_share">Share this meeting id %1$s, with all attendees.</string>
+    <string name="meeting_notes_problem">There was a problem creating the meeting notes. please retry later.</string>
 
     <string name="mode_dictation">DICTATION</string>
     <string name="mode_meeting_notes">MEETING NOTES</string>
@@ -36,6 +38,7 @@
     <string name="dictation">Dictation</string>
     <string name="time_remaining">Remaining Time\n%1$s</string>
     <string name="mode_meeting">Meeting Id : %1$s</string>
+    <string name="mode_meeting_name">Attendee Name : %1$s</string>
     <string name="mode_text">Mode : %1$s</string>
     <string name="title_text">Title : %1$s</string>
     <string name="listening">Listening</string>
