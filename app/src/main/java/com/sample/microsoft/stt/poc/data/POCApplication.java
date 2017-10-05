@@ -2,6 +2,8 @@ package com.sample.microsoft.stt.poc.data;
 
 import android.app.Application;
 
+import java.util.List;
+
 /**
  * Created by sgarimella on 26/09/17.
  */
@@ -13,6 +15,7 @@ public class POCApplication extends Application {
     private String mAttendeeName;
     private boolean isOrganiser;
     private String mMeetingId;
+    private List<MeetingNotes> notes;
 
     public int getRecordTime() {
         return mRecordTime;
@@ -60,6 +63,14 @@ public class POCApplication extends Application {
 
     public void setMeetingId(String meetingId) {
         this.mMeetingId = meetingId;
+    }
+
+    public List<MeetingNotes> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<MeetingNotes> notes) {
+        this.notes = notes;
     }
 
     public void clearDictation() {
