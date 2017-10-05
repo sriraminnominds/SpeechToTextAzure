@@ -2,6 +2,7 @@ package com.sample.microsoft.stt.poc.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.socket.SocketHelper;
 import com.sample.microsoft.stt.poc.socket.SocketRequestContract;
 import com.sample.microsoft.stt.poc.socket.SocketResponseContract;
+import com.sample.microsoft.stt.poc.ui.custom.EqualizerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +28,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private final String TAG = "MeetingNotesFragment";
 
     private SocketRequestContract mSocketRequest;
+    private EqualizerView mEqualiser;
 
     @Nullable
     @Override
@@ -35,8 +38,9 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         return v;
     }
 
-    private void initialiseViews(View v) {
-
+    private void initialiseViews(View view) {
+        mEqualiser = view.findViewById(R.id.equalizer);
+        mEqualiser.stopBars();
     }
 
     @Override
@@ -46,8 +50,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         ((MicrosoftLandingActivity) getActivity()).enableBackButton();
 
         ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
-        mSocketRequest = new SocketHelper();
-        mSocketRequest.initialise("http://192.168.21.126:3000/", mSocketResp);
     }
 
     @Override
@@ -55,6 +57,9 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         super.onResume();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
+
+        mSocketRequest = new SocketHelper();
+        mSocketRequest.initialise("http://192.168.21.126:3000/", mSocketResp);
     }
 
     @Override
@@ -62,28 +67,50 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         super.onPause();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+
+        mSocketRequest.closeAndDisconnectSocket();
     }
 
     @Override
     public void partial(byte state, String data) {
         Log.v(TAG, "Azure : partial Message : " + data);
+        if (TextUtils.isEmpty(data) || "null".equalsIgnoreCase(data)) {
+            resetAudioListener();
+            return;
+        }
+        mEqualiser.stopBars();
+        mEqualiser.setBarCount(data.length());
+        mEqualiser.animateBars();
     }
 
     @Override
     public void complete(byte state, String data) {
         try {
-            Log.v(TAG, "Azure : complete Message : " + data);
-            JSONObject msg = new JSONObject();
-            msg.put("message", data);
-            mSocketRequest.emitMessage("chat message", msg);
+            if (mSocketRequest.isSocketConnected()) {
+                Log.v(TAG, "Azure : complete Message : " + data);
+                JSONObject msg = new JSONObject();
+                msg.put("message", data);
+                mSocketRequest.emitMessage("chat message", msg);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        mEqualiser.stopBars();
     }
 
     @Override
     public void error(byte state, String data) {
         Log.v(TAG, "Azure : error Message : " + data);
+        mEqualiser.stopBars();
+    }
+
+    private void resetAudioListener() {
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+
+
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
     }
 
 
