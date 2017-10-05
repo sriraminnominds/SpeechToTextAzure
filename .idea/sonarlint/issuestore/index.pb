@@ -38,3 +38,13 @@ y
 Iapp/src/main/java/com/sample/microsoft/stt/poc/ui/SelectModeFragment.java,b/4/b41e202b250524c71c7442c7849520355abfbe13
 {
 Kapp/src/main/java/com/sample/microsoft/stt/poc/ui/custom/EqualizerView.java,6/f/6f4af59bf57556ad6f1c88fa2224918fe4918cdd
+o
+?app/src/main/java/com/sample/microsoft/stt/poc/data/Record.java,7/3/73101979bd482196f9ebb54c56efe0bd6bfc8a59
+v
+Fapp/src/main/java/com/sample/microsoft/stt/poc/data/SemanticError.java,3/4/34fa36167130af3f20f952325557a4c4a38ba7d3
+{
+Kapp/src/main/java/com/sample/microsoft/stt/poc/ui/PdfGeneratorFragment.java,3/5/353448402676ce3e8791f7917bada0a8b453ef5f
+€
+Papp/src/main/java/com/sample/microsoft/stt/poc/ui/custom/TextViewWithImages.java,6/f/6f2ea59c79a2a2fb7e73771039e6370ce406aeb6
+‚
+Rapp/src/main/java/com/sample/microsoft/stt/poc/ui/SemanticsValidationFragment.java,f/d/fd11386d49174d698c171a293ebd667a7abcad8e
