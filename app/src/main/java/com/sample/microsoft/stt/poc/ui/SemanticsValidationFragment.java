@@ -149,6 +149,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         dialog.setContentView(R.layout.view_title_dialog);
         final TextInputLayout layout = (TextInputLayout) dialog.findViewById(R.id.input_layout_title);
         final EditText text = dialog.findViewById(R.id.input_title);
+        dialog.setCancelable(false);
         dialog.show();
 
         TextView acceptButton = (TextView) dialog.findViewById(R.id.next);
@@ -349,7 +350,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
         }
     }
 
-    private void writeToFile(){
+    private void writeToFile() {
         String title = ((POCApplication) getActivity().getApplication()).getTitle();
         AppUtils.writeToPdf(getActivity(), title, mRecordedView);
         ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());

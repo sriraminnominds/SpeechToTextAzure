@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.data.POCApplication;
+import com.sample.microsoft.stt.poc.utils.AppUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,7 +62,8 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
             case R.id.save:
                 if (isStoragePermissionGranted()) {
-                    writeToPdf();
+                    String title = ((POCApplication) getActivity().getApplication()).getTitle();
+                    AppUtils.writeToPdf(getActivity(), title, mRecordedView);
                     ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
                 }
                 break;
@@ -89,48 +91,8 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
-            writeToPdf();
-        }
-    }
-
-    private void writeToPdf() {
-        FileOutputStream fOut = null;
-        try {
             String title = ((POCApplication) getActivity().getApplication()).getTitle();
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + File.separator + "Notes";
-            File folder = new File(path);
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-            String fileName = title + ".pdf";
-            final File file = new File(path, fileName);
-            file.createNewFile();
-            fOut = new FileOutputStream(file);
-
-            PdfDocument document = new PdfDocument();
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int height = displayMetrics.heightPixels;
-            int width = displayMetrics.widthPixels;
-
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
-            PdfDocument.Page page = document.startPage(pageInfo);
-
-            mRecordedView.draw(page.getCanvas());
-
-            document.finishPage(page);
-            document.writeTo(fOut);
-            document.close();
-        } catch (IOException e) {
-            Log.i("error", e.getLocalizedMessage());
-        } finally {
-            try {
-                if (fOut != null) {
-                    fOut.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            AppUtils.writeToPdf(getActivity(), title, mRecordedView);
         }
     }
 }

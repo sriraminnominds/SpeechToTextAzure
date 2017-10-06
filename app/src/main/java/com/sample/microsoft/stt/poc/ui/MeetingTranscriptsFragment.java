@@ -90,6 +90,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
         dialog.setContentView(R.layout.view_title_dialog);
         final TextInputLayout layout = (TextInputLayout) dialog.findViewById(R.id.input_layout_title);
         final EditText text = dialog.findViewById(R.id.input_title);
+        dialog.setCancelable(false);
         dialog.show();
 
         TextView acceptButton = (TextView) dialog.findViewById(R.id.next);
@@ -174,7 +175,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
             }
 
             public void bindRestaurant(MeetingNotes notes) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 String shortTimeStr = sdf.format(notes.getDate());
                 date.setText(shortTimeStr);
                 author.setText(notes.getUserName());

@@ -222,6 +222,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private void showMeetingNotesDialog() {
         mDialog = new Dialog(getActivity());
         mDialog.setContentView(R.layout.view_meeting_notes_dialog);
+        mDialog.setCancelable(false);
 
         final EditText userNameET = (EditText) mDialog.findViewById(R.id.input_et_userName);
         final EditText meetingIdET = (EditText) mDialog.findViewById(R.id.input_et_meeting_id);
@@ -264,7 +265,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
         final TextView dataTv = (TextView) mDialog.findViewById(R.id.dialog_data);
         dataTv.setText(getString(R.string.meeting_notes_problem));
-
+        mDialog.setCancelable(false);
         mDialog.show();
         TextView acceptButton = (TextView) mDialog.findViewById(R.id.next);
         acceptButton.setOnClickListener(new View.OnClickListener() {
