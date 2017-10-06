@@ -191,7 +191,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 jMsg.put(JSON_USER_ID, AppUtils.getDeviceUniqueId(getActivity()));
                 jMsg.put(JSON_USER_NAME, mAttendeeName);
                 jMsg.put(JSON_IS_ORGANISER, mIsOrganiser);
-                jMsg.put(JSON_TIMESTAMP, new Date().getTime());
                 if (isStart) {
                     mSocketRequest.emitMessage("startmeeting", jMsg);
 
@@ -219,7 +218,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 jMsg.put(JSON_USER_ID, AppUtils.getDeviceUniqueId(getActivity()));
                 jMsg.put(JSON_USER_NAME, mAttendeeName);
                 jMsg.put(JSON_MESSAGE, msg);
-                jMsg.put(JSON_TIMESTAMP, new Date().getTime());
                 mSocketRequest.emitMessage("addnotes", jMsg);
             } else {
                 Log.v(TAG, "Socket Not Connected");
