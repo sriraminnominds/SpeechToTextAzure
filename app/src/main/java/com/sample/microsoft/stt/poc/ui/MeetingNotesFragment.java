@@ -93,6 +93,8 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         mAttendeeTV = (TextView) view.findViewById(R.id.title_title_title);
         mAttendeeTV.setText(userName);
 
+        view.findViewById(R.id.timer_text).setVisibility(View.GONE);
+
         mDone = view.findViewById(R.id.donerecord);
         mDone.setOnClickListener(this);
 
@@ -116,15 +118,11 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     @Override
     public void onResume() {
         super.onResume();
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
     }
 
     @Override
@@ -151,6 +149,10 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
     @Override
     public void complete(byte state, String data) {
+        if (TextUtils.isEmpty(data) || "null".equalsIgnoreCase(data)) {
+            resetAudioListener();
+            return;
+        }
         sendMessage(data);
 
         mDone.setEnabled(true);
@@ -192,8 +194,14 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 jMsg.put(JSON_TIMESTAMP, new Date().getTime());
                 if (isStart) {
                     mSocketRequest.emitMessage("startmeeting", jMsg);
+
+                    ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
+                    ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
                 } else {
                     mSocketRequest.emitMessage("endmeeting", jMsg);
+
+                    ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
+                    ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
                 }
             } else {
                 Log.v(TAG, "Socket Not Connected");
@@ -222,6 +230,9 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     }
 
     private void showMeetingNotesDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            return;
+        }
         mDialog = new Dialog(getActivity());
         mDialog.setContentView(R.layout.view_meeting_notes_dialog);
         mDialog.setCancelable(false);
@@ -261,6 +272,9 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     }
 
     private void showConfirmationDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            return;
+        }
         mDialog = new Dialog(getActivity());
         mDialog.setContentView(R.layout.view_share_meeting_id_dialog);
 

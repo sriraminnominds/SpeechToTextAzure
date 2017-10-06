@@ -48,7 +48,8 @@ public class MicrosoftLandingActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(android.R.id.content, fragment, fragment.getClass().getName());
         fragmentTransaction.addToBackStack(fragment.getTag());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
+        //fragmentTransaction.commit();
     }
 
     public void setActionBarTitle(String title) {
