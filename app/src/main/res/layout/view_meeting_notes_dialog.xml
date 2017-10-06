@@ -57,7 +57,8 @@
                 android:id="@+id/input_et_meeting_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/meeting_notes_meeting_id"/>
+                android:hint="@string/meeting_notes_meeting_id"
+                android:inputType="number"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
