@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,6 +58,15 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private TextView mRecordedView;
     private StringBuilder mRecordedData;
 
+    private static final String JSON_MEETING_ID = "meetingId";
+    private static final String JSON_USER_ID = "userId";
+    private static final String JSON_USER_NAME = "userName";
+    private static final String JSON_IS_ORGANISER = "isOrganizer";
+    private static final String JSON_TIMESTAMP = "timestamp";
+    private static final String JSON_MESSAGE = "message";
+
+    private static final String API_END_POINT = "http://192.168.21.126:3000/";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,7 +97,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     @Override
     public void onStart() {
         super.onStart();
-        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle("Meeting Notes");
+        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.mode_meeting));
         ((MicrosoftLandingActivity) getActivity()).enableBackButton();
 
         ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
@@ -99,7 +107,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     public void onResume() {
         super.onResume();
         mSocketRequest = new SocketHelper();
-        mSocketRequest.initialise("http://192.168.21.126:3000/", mSocketResp);
+        mSocketRequest.initialise(API_END_POINT, mSocketResp);
 
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
@@ -167,11 +175,11 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         try {
             if (mSocketRequest.isSocketConnected()) {
                 JSONObject jMsg = new JSONObject();
-                jMsg.put("meetingId", mMeetingId);
-                jMsg.put("userId", AppUtils.getDeviceUniqueId(getActivity()));
-                jMsg.put("userName", mAttendeeName);
-                jMsg.put("isOrganizer", mIsOrganiser);
-                jMsg.put("timestamp", new Date().getTime());
+                jMsg.put(JSON_MEETING_ID, mMeetingId);
+                jMsg.put(JSON_USER_ID, AppUtils.getDeviceUniqueId(getActivity()));
+                jMsg.put(JSON_USER_NAME, mAttendeeName);
+                jMsg.put(JSON_IS_ORGANISER, mIsOrganiser);
+                jMsg.put(JSON_TIMESTAMP, new Date().getTime());
                 if (isStart) {
                     mSocketRequest.emitMessage("startmeeting", jMsg);
                 } else {
@@ -189,11 +197,11 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         try {
             if (mSocketRequest.isSocketConnected() && !TextUtils.isEmpty(msg)) {
                 JSONObject jMsg = new JSONObject();
-                jMsg.put("meetingId", mMeetingId);
-                jMsg.put("userId", AppUtils.getDeviceUniqueId(getActivity()));
-                jMsg.put("userName", mAttendeeName);
-                jMsg.put("message", msg);
-                jMsg.put("timestamp", new Date().getTime());
+                jMsg.put(JSON_MEETING_ID, mMeetingId);
+                jMsg.put(JSON_USER_ID, AppUtils.getDeviceUniqueId(getActivity()));
+                jMsg.put(JSON_USER_NAME, mAttendeeName);
+                jMsg.put(JSON_MESSAGE, msg);
+                jMsg.put(JSON_TIMESTAMP, new Date().getTime());
                 mSocketRequest.emitMessage("addnotes", jMsg);
             } else {
                 Log.v(TAG, "Socket Not Connected");
@@ -369,12 +377,12 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
             JSONArray jTranscripts = new JSONArray(message);
             for (int i = 0; i < jTranscripts.length(); i++) {
                 JSONObject jObj = jTranscripts.getJSONObject(i);
-                String mId = jObj.optString("meetingId");
-                String userId = jObj.optString("userId");
-                String userName = jObj.optString("userName");
-                String msg = jObj.optString("message");
-                long timeStamp = jObj.optLong("timestamp");
-                boolean isOrg = jObj.optBoolean("isOrganizer");
+                String mId = jObj.optString(JSON_MEETING_ID);
+                String userId = jObj.optString(JSON_USER_ID);
+                String userName = jObj.optString(JSON_USER_NAME);
+                String msg = jObj.optString(JSON_MESSAGE);
+                long timeStamp = jObj.optLong(JSON_TIMESTAMP);
+                boolean isOrg = jObj.optBoolean(JSON_IS_ORGANISER);
 
                 MeetingNotes m = new MeetingNotes(mId, userId, userName, msg, isOrg, new Date(timeStamp));
                 list.add(m);
