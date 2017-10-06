@@ -2,15 +2,12 @@ package com.sample.microsoft.stt.poc.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +16,7 @@ import android.widget.TextView;
 
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
-import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.utils.AppUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by sgarimella on 26/09/17.

@@ -23,7 +23,6 @@ import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.data.MeetingNotes;
-import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.utils.AppUtils;
 
 import java.text.SimpleDateFormat;

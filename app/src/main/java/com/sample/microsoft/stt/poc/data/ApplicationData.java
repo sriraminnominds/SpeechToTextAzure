@@ -8,7 +8,7 @@ import java.util.List;
  * Created by sgarimella on 26/09/17.
  */
 
-public class POCApplication {
+public class ApplicationData {
     private int mRecordTime = 0;
     private String mTitle;
     private String mRecordedText;

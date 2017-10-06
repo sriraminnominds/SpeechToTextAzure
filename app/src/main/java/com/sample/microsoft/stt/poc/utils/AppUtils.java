@@ -9,8 +9,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
-import com.sample.microsoft.stt.poc.data.POCApplication;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

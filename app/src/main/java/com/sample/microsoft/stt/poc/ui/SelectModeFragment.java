@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.sample.microsoft.stt.R;
 import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
-import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.ui.custom.TextViewWithImages;
 
 /**

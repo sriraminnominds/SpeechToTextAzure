@@ -26,7 +26,6 @@ import com.sample.microsoft.stt.poc.BaseFragment;
 import com.sample.microsoft.stt.poc.CognitiveServicesHelper;
 import com.sample.microsoft.stt.poc.MicrosoftLandingActivity;
 import com.sample.microsoft.stt.poc.data.MeetingNotes;
-import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.socket.SocketHelper;
 import com.sample.microsoft.stt.poc.socket.SocketRequestContract;
 import com.sample.microsoft.stt.poc.socket.SocketResponseContract;
