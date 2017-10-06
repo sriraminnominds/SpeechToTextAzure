@@ -77,4 +77,11 @@ public class POCApplication extends Application {
         mRecordTime = 0;
         mTitle = "";
     }
+
+    public void clearMeetingNotes() {
+        if (notes != null) {
+            notes.clear();
+        }
+        mTitle = "";
+    }
 }

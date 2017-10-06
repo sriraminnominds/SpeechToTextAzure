@@ -51,6 +51,7 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
                 }
                 break;
             case R.id.mode_meeting_notes:
+                ((POCApplication) getActivity().getApplication()).clearMeetingNotes();
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingNotesFragment());
                 break;
         }

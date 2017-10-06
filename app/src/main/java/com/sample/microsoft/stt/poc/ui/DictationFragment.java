@@ -91,7 +91,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
     @Override
     public void onStart() {
         super.onStart();
-        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.dictation_title));
+        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.mode_dictation));
         ((MicrosoftLandingActivity) getActivity()).enableBackButton();
     }
 
@@ -265,7 +265,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
                 ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
                 resetAudioListener();
             } else {
-                  requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MICROPHONE);
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MICROPHONE);
             }
         }
     }

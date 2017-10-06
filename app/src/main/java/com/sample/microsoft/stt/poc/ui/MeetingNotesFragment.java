@@ -1,9 +1,14 @@
 package com.sample.microsoft.stt.poc.ui;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -32,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +72,8 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
     private static final String API_END_POINT = "http://meeting-dictate.azurewebsites.net/";
 
+    private final int REQUEST_MICROPHONE = 1;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,15 +99,16 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
         mRecordedView = view.findViewById(R.id.recordeddata);
         mRecordedData = new StringBuilder();
+
+        ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+        requestForPermissions();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.mode_meeting));
+        ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.mode_meeting_notes));
         ((MicrosoftLandingActivity) getActivity()).enableBackButton();
-
-        ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
     }
 
     @Override
@@ -394,6 +401,27 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void requestForPermissions() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
+                ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+                resetAudioListener();
+            } else {
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MICROPHONE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_MICROPHONE:
+                ((MicrosoftLandingActivity) getActivity()).initialiseCognitiveServices();
+                resetAudioListener();
+                break;
         }
     }
 }
