@@ -17,6 +17,8 @@
             android:layout_height="40dp"
             android:background="@color/colorPrimary"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_5"
+            android:paddingRight="@dimen/dimen_5"
             android:weightSum="1">
 
             <TextView
@@ -24,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
-                android:gravity="center"
+                android:gravity="center_vertical|left"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
@@ -34,7 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
-                android:gravity="center"
+                android:gravity="center_vertical|left"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
@@ -44,7 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"
-                android:gravity="center"
+                android:gravity="center_vertical|left"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
@@ -55,8 +57,8 @@
             android:id="@+id/transcript_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/dimen_10"
-            android:paddingRight="@dimen/dimen_10"/>
+            android:paddingLeft="@dimen/dimen_5"
+            android:paddingRight="@dimen/dimen_5"/>
     </LinearLayout>
 
     <TextView

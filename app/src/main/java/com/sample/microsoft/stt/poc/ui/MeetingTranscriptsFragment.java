@@ -55,7 +55,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
     private void initialiseViews(View v) {
         mLayout = v.findViewById(R.id.transcript_layout);
         RecyclerView list = v.findViewById(R.id.transcript_list);
-        TranscriptListAdapter adapter = new TranscriptListAdapter(((POCApplication) getActivity().getApplication()).getNotes());
+        TranscriptListAdapter adapter = new TranscriptListAdapter(((MicrosoftLandingActivity) getActivity()).getData().getNotes());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(mLayoutManager);
         list.setItemAnimator(new DefaultItemAnimator());
@@ -73,7 +73,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.transcript_generate:
-                String title = ((POCApplication) getActivity().getApplication()).getTitle();
+                String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
                 if (TextUtils.isEmpty(title)) {
                     showTitleDialog();
                 } else {
@@ -100,7 +100,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
                 String title = text.getText().toString();
                 if (!TextUtils.isEmpty(title)) {
                     dialog.dismiss();
-                    ((POCApplication) getActivity().getApplication()).setTitle(title);
+                    ((MicrosoftLandingActivity) getActivity()).getData().setTitle(title);
                     if (isStoragePermissionGranted()) {
                         writeToFile();
                     }
@@ -133,7 +133,7 @@ public class MeetingTranscriptsFragment extends BaseFragment implements View.OnC
     }
 
     private void writeToFile(){
-        String title = ((POCApplication) getActivity().getApplication()).getTitle();
+        String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
         AppUtils.writeToPdf(getActivity(), title, mLayout);
         ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
     }

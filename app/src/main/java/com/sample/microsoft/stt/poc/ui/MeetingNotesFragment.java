@@ -109,14 +109,14 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         super.onStart();
         ((MicrosoftLandingActivity) getActivity()).setActionBarTitle(getString(R.string.mode_meeting_notes));
         ((MicrosoftLandingActivity) getActivity()).enableBackButton();
+
+        mSocketRequest = new SocketHelper();
+        mSocketRequest.initialise(API_END_POINT, mSocketResp);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSocketRequest = new SocketHelper();
-        mSocketRequest.initialise(API_END_POINT, mSocketResp);
-
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
     }
@@ -124,12 +124,16 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     @Override
     public void onPause() {
         super.onPause();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
+        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         sendMeetingMsg(false);
         mMeetingId = null;
         mAttendeeName = null;
-
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
-        ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
     }
 
     @Override
@@ -166,14 +170,13 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
     @Override
     public void error(byte state, String data) {
-        //Log.v(TAG, "Azure : error Message : " + data);
+        Log.v(TAG, "Azure : error Message : " + data);
         mEqualiser.stopBars();
     }
 
     private void resetAudioListener() {
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().stopRecording();
-
 
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().registerRecorderListener(this);
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().startRecording();
@@ -238,8 +241,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 }
             }
         });
-
-        mDialog.show();
         TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,13 +251,14 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 mIsOrganiser = isOrganiserCB.isChecked();
                 mAttendeeName = userNameET.getText().toString();
 
-                ((POCApplication) getActivity().getApplication()).setMeetingId(mMeetingId);
-                ((POCApplication) getActivity().getApplication()).setAttendeeName(mAttendeeName);
-                ((POCApplication) getActivity().getApplication()).setOrganiser(mIsOrganiser);
+                ((MicrosoftLandingActivity) getActivity()).getData().setMeetingId(mMeetingId);
+                ((MicrosoftLandingActivity) getActivity()).getData().setAttendeeName(mAttendeeName);
+                ((MicrosoftLandingActivity) getActivity()).getData().setOrganiser(mIsOrganiser);
 
                 sendMeetingMsg(true);
             }
         });
+        mDialog.show();
     }
 
     private void showConfirmationDialog() {
@@ -333,10 +335,11 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
         @Override
         public void onMeetingStarted(String message) {
+            Log.v(TAG, "Socket : onMeetingStarted " + message);
             try {
                 JSONObject data = new JSONObject(message);
                 mMeetingId = data.optString(JSON_MEETING_ID);
-                ((POCApplication) getActivity().getApplication()).setMeetingId(mMeetingId);
+                ((MicrosoftLandingActivity) getActivity()).getData().setMeetingId(mMeetingId);
 
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
@@ -357,6 +360,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
         @Override
         public void onMeetingEnd(String message) {
+            Log.v(TAG, "Socket : onMeetingEnd " + message);
             createTranscripts(message);
             mSocketRequest.closeAndDisconnectSocket();
         }
@@ -396,8 +400,8 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 MeetingNotes m = new MeetingNotes(mId, userId, userName, msg, isOrg, new Date(timeStamp));
                 list.add(m);
             }
-            if (getActivity() != null) {
-                ((POCApplication) getActivity().getApplication()).setNotes(list);
+            if (getActivity() != null && !isHidden()) {
+                ((MicrosoftLandingActivity) getActivity()).getData().setNotes(list);
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingTranscriptsFragment());
             }
         } catch (JSONException e) {

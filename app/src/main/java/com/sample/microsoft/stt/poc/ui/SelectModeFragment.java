@@ -51,7 +51,7 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
                 }
                 break;
             case R.id.mode_meeting_notes:
-                ((POCApplication) getActivity().getApplication()).clearMeetingNotes();
+                ((MicrosoftLandingActivity) getActivity()).getData().clearMeetingNotes();
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingNotesFragment());
                 break;
         }
@@ -83,8 +83,8 @@ public class SelectModeFragment extends BaseFragment implements View.OnClickList
             public void onClick(View v) {
                 // Close dialog
                 mDialog.dismiss();
-                ((POCApplication) getActivity().getApplication()).clearDictation();
-                ((POCApplication) getActivity().getApplication()).setRecordTime(5);
+                ((MicrosoftLandingActivity) getActivity()).getData().clearDictation();
+                ((MicrosoftLandingActivity) getActivity()).getData().setRecordTime(5);
                 ((MicrosoftLandingActivity) getActivity()).setFragment(new DictationFragment());
             }
         });

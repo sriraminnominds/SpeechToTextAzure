@@ -1,6 +1,7 @@
 package com.sample.microsoft.stt.poc.ui;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import java.util.TimerTask;
 
 public class DictationFragment extends BaseFragment implements CognitiveServicesHelper.RecorderListener, View.OnClickListener {
     private final String TAG = "DictationFragment";
+    private Dialog mDialog;
 
     private TextView mRecordedView;
     private StringBuilder mRecordedData;
@@ -64,13 +66,13 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mRecordedView = view.findViewById(R.id.recordeddata);
         mRecordedData = new StringBuilder();
 
-        mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
+        mRecordTimeInMins = (((MicrosoftLandingActivity) getActivity()).getData().getRecordTime() - 1);
         mTimerView = view.findViewById(R.id.timer_text);
 
         String text = String.format(getResources().getString(R.string.mode_text), getResources().getString(R.string.dictation));
         ((TextView) view.findViewById(R.id.mode_text_title)).setText(text);
 
-        String t = ((POCApplication) getActivity().getApplication()).getTitle();
+        String t = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
         t = TextUtils.isEmpty(t) ? "Untitled" : t;
         String title = String.format(getResources().getString(R.string.title_text), t);
         ((TextView) view.findViewById(R.id.title_title_title)).setText(title);
@@ -188,7 +190,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
         mPauseView.setImageResource(R.mipmap.ic_pause);
 
         mRecordedData = new StringBuilder();
-        mRecordTimeInMins = (((POCApplication) getActivity().getApplication()).getRecordTime() - 1);
+        mRecordTimeInMins = (((MicrosoftLandingActivity) getActivity()).getData().getRecordTime() - 1);
         mRecordTimeInSecs = 59;
         mRecordedView.setText(mRecordedData.toString());
 
@@ -233,7 +235,7 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
 
     public void done() {
         if (!TextUtils.isEmpty(mRecordedData.toString())) {
-            ((POCApplication) getActivity().getApplication()).setRecordedText(mRecordedData.toString());
+            ((MicrosoftLandingActivity) getActivity()).getData().setRecordedText(mRecordedData.toString());
             ((MicrosoftLandingActivity) getActivity()).setFragment(new SemanticsValidationFragment());
         } else {
             ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
@@ -278,5 +280,23 @@ public class DictationFragment extends BaseFragment implements CognitiveServices
                 resetAudioListener();
                 break;
         }
+    }
+
+    private void showConfirmationDialog() {
+        mDialog = new Dialog(getActivity());
+        mDialog.setContentView(R.layout.view_share_meeting_id_dialog);
+
+        final TextView dataTv = (TextView) mDialog.findViewById(R.id.dialog_data);
+        dataTv.setText(getString(R.string.meeting_notes_problem));
+        mDialog.setCancelable(false);
+        mDialog.show();
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.next);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+                getActivity().onBackPressed();
+            }
+        });
     }
 }

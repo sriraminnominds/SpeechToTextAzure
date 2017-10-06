@@ -79,7 +79,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     private void initialiseViews(View view) {
         mProgressBar = view.findViewById(R.id.loading_progress_bar);
 
-        mSemanticText = ((POCApplication) getActivity().getApplication()).getRecordedText();
+        mSemanticText = ((MicrosoftLandingActivity) getActivity()).getData().getRecordedText();
         mRecordedView = ((TextView) view.findViewById(R.id.recordeddata));
         mRecordedView.setText(mSemanticText);
 
@@ -102,7 +102,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                 if ((mPopupWindow != null) && mPopupWindow.isShowing()) {
                     mPopupWindow.dismiss();
                 }
-                String title = ((POCApplication) getActivity().getApplication()).getTitle();
+                String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
                 if (TextUtils.isEmpty(title)) {
                     showTitleDialog();
                 } else {
@@ -134,7 +134,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     }
 
     private void showErrorSpans() {
-        String text = ((POCApplication) getActivity().getApplication()).getRecordedText();
+        String text = ((MicrosoftLandingActivity) getActivity()).getData().getRecordedText();
         mErrorSpannable = new SpannableString(text);
         for (SemanticError error : mErrors) {
             mErrorSpannable.setSpan(new ErrorClickableSpan(this, error), error.getOffset(), error.getOffset() + error.getLength(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -159,7 +159,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                 String title = text.getText().toString();
                 if (!TextUtils.isEmpty(title)) {
                     dialog.dismiss();
-                    ((POCApplication) getActivity().getApplication()).setTitle(title);
+                    ((MicrosoftLandingActivity) getActivity()).getData().setTitle(title);
                     if (isStoragePermissionGranted()) {
                         writeToFile();
                     }
@@ -229,7 +229,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                 }
                 String sub = mSemanticText.substring(error.getOffset(), error.getOffset() + error.getLength());
                 mSemanticText = mSemanticText.replace(sub, error.getOptions().get(position));
-                ((POCApplication) getActivity().getApplication()).setRecordedText(mSemanticText);
+                ((MicrosoftLandingActivity) getActivity()).getData().setRecordedText(mSemanticText);
                 checkForErrors();
             }
         });
@@ -240,7 +240,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
 
     private void checkForErrors() {
         mProgressBar.setVisibility(View.VISIBLE);
-        mSemanticText = ((POCApplication) getActivity().getApplication()).getRecordedText();
+        mSemanticText = ((MicrosoftLandingActivity) getActivity()).getData().getRecordedText();
         ;
         StringBuilder payload = new StringBuilder();
         payload.append("disabledRules=WHITESPACE_RULE&allowIncompleteResults=true&text=");
@@ -351,7 +351,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     }
 
     private void writeToFile() {
-        String title = ((POCApplication) getActivity().getApplication()).getTitle();
+        String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
         AppUtils.writeToPdf(getActivity(), title, mRecordedView);
         ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
     }

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.microsoft.cognitiveservices.speechrecognition.SpeechRecognitionMode;
 import com.sample.microsoft.stt.R;
+import com.sample.microsoft.stt.poc.data.POCApplication;
 import com.sample.microsoft.stt.poc.ui.DocumentsListFragment;
 
 /**
@@ -18,12 +19,14 @@ import com.sample.microsoft.stt.poc.ui.DocumentsListFragment;
 public class MicrosoftLandingActivity extends AppCompatActivity {
 
     private CognitiveServicesHelper mHelper;
+    private POCApplication mData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_microsoft_landing);
 
+        mData = new POCApplication();
         getSupportFragmentManager().findFragmentById(R.id.frame_container);
         setFragment(new DocumentsListFragment());
     }
@@ -76,5 +79,9 @@ public class MicrosoftLandingActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public POCApplication getData() {
+        return mData;
     }
 }

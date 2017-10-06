@@ -43,7 +43,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
     }
 
     private void initialiseViews(View view) {
-        String text = ((POCApplication) getActivity().getApplication()).getRecordedText();
+        String text = ((MicrosoftLandingActivity) getActivity()).getData().getRecordedText();
         mRecordedView = ((TextView) view.findViewById(R.id.recordeddata));
         mRecordedView.setText(text);
 
@@ -62,7 +62,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
             case R.id.save:
                 if (isStoragePermissionGranted()) {
-                    String title = ((POCApplication) getActivity().getApplication()).getTitle();
+                    String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
                     AppUtils.writeToPdf(getActivity(), title, mRecordedView);
                     ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
                 }
@@ -91,7 +91,7 @@ public class PdfGeneratorFragment extends Fragment implements View.OnClickListen
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
-            String title = ((POCApplication) getActivity().getApplication()).getTitle();
+            String title = ((MicrosoftLandingActivity) getActivity()).getData().getTitle();
             AppUtils.writeToPdf(getActivity(), title, mRecordedView);
         }
     }
