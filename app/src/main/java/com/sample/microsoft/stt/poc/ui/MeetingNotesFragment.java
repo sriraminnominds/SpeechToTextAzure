@@ -143,7 +143,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         mEqualiser.setBarCount(data.length());
         mEqualiser.animateBars();
 
-        mDone.setEnabled(false);
         mRecordedView.setText(mRecordedData.toString() + data);
     }
 
@@ -155,7 +154,6 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         }
         sendMessage(data);
 
-        mDone.setEnabled(true);
         mRecordedData.append(data);
         mRecordedData.append('\n');
         mRecordedView.setText(mRecordedData.toString());
