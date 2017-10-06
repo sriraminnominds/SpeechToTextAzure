@@ -28,6 +28,7 @@
     <string name="next">NEXT</string>
     <string name="save">SAVE</string>
     <string name="text_continue">CONTINUE</string>
+    <string name="transcripts">Meeting Transcripts</string>
 
     <string name="my_notes">My Notes</string>
     <string name="select_mode">Select Mode</string>

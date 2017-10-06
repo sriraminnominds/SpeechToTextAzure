@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +66,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     private static final String JSON_TIMESTAMP = "timestamp";
     private static final String JSON_MESSAGE = "message";
 
-    private static final String API_END_POINT = "http://192.168.21.126:3000/";
+    private static final String API_END_POINT = "http://meeting-dictate.azurewebsites.net/";
 
     @Nullable
     @Override
@@ -326,7 +327,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         public void onMeetingStarted(String message) {
             try {
                 JSONObject data = new JSONObject(message);
-                mMeetingId = data.optString("meetingId");
+                mMeetingId = data.optString(JSON_MEETING_ID);
                 ((POCApplication) getActivity().getApplication()).setMeetingId(mMeetingId);
 
                 if (getActivity() != null) {
@@ -387,8 +388,10 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
                 MeetingNotes m = new MeetingNotes(mId, userId, userName, msg, isOrg, new Date(timeStamp));
                 list.add(m);
             }
-            ((POCApplication) getActivity().getApplication()).setNotes(list);
-            ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+            if (getActivity() != null) {
+                ((POCApplication) getActivity().getApplication()).setNotes(list);
+                ((MicrosoftLandingActivity) getActivity()).setFragment(new MeetingTranscriptsFragment());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

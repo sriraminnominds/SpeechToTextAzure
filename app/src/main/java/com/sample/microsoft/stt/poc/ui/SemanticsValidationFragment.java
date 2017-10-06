@@ -61,8 +61,6 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     private TextView mRecordedView;
 
     private final String API_END_POINT = "https://languagetool.org/api/v2/check";
-    private OkHttpClient mClient = new OkHttpClient();
-
     private List<SemanticError> mErrors = new ArrayList<>();
     private String mSemanticText;
 
@@ -109,9 +107,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                     showTitleDialog();
                 } else {
                     if (isStoragePermissionGranted()) {
-                        String fileName = ((POCApplication) getActivity().getApplication()).getTitle();
-                        AppUtils.writeToPdf(getActivity(), fileName, mRecordedView);
-                        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                        writeToFile();
                     }
                 }
                 break;
@@ -164,9 +160,7 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
                     dialog.dismiss();
                     ((POCApplication) getActivity().getApplication()).setTitle(title);
                     if (isStoragePermissionGranted()) {
-                        String fileName = ((POCApplication) getActivity().getApplication()).getTitle();
-                        AppUtils.writeToPdf(getActivity(), fileName, mRecordedView);
-                        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+                        writeToFile();
                     }
                 } else {
                     layout.setError("Please enter title of document");
@@ -351,10 +345,14 @@ public class SemanticsValidationFragment extends BaseFragment implements View.On
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            String title = ((POCApplication) getActivity().getApplication()).getTitle();
-            AppUtils.writeToPdf(getActivity(), title, mRecordedView);
-            ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
+            writeToFile();
         }
+    }
+
+    private void writeToFile(){
+        String title = ((POCApplication) getActivity().getApplication()).getTitle();
+        AppUtils.writeToPdf(getActivity(), title, mRecordedView);
+        ((MicrosoftLandingActivity) getActivity()).setFragment(new DocumentsListFragment());
     }
 
 
