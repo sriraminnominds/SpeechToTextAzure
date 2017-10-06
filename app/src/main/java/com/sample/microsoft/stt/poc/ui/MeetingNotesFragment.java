@@ -125,7 +125,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
     public void onPause() {
         super.onPause();
         sendMeetingMsg(false);
-        mMeetingIdTV = null;
+        mMeetingId = null;
         mAttendeeName = null;
 
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
@@ -266,7 +266,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
         dataTv.setText(getString(R.string.meeting_notes_problem));
 
         mDialog.show();
-        TextView acceptButton = (TextView) mDialog.findViewById(R.id.dialog_ok);
+        TextView acceptButton = (TextView) mDialog.findViewById(R.id.next);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -372,7 +372,7 @@ public class MeetingNotesFragment extends BaseFragment implements CognitiveServi
 
     public void done() {
         sendMeetingMsg(false);
-        mMeetingIdTV = null;
+        mMeetingId = null;
         mAttendeeName = null;
 
         ((MicrosoftLandingActivity) this.getActivity()).getSpeechHelper().unRegisterRecorderListener();
